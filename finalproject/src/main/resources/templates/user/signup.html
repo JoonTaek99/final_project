@@ -26,6 +26,9 @@ function authorization(){
 <body>
 <div layout:fragment="content">
 <form action="/user/addUser" method="post">
+<input type="hidden" name="useraccesstoken" class="form-control" />
+<input type="hidden" name="userrefreshtoken" class="form-control" />
+<input type="hidden" name="userseqno" class="form-control" />
                     	<table class="table">
                     		<tr>
                     			<th>이메일</th>
@@ -38,18 +41,6 @@ function authorization(){
                     		<tr>
                     			<th>비밀번호</th>
                     			<td><input type="password" name="password" class="form-control" /></td>
-                    		</tr>
-                    		<tr>
-                    			<th>AccessToken</th>
-                    			<td><input type="text" name="useraccesstoken" class="form-control" /></td>
-                    		</tr>
-                    		<tr>
-                    			<th>RefreshToken</th>
-                    			<td><input type="text" name="userrefreshtoken" class="form-control" /></td>
-                    		</tr>
-                    		<tr>
-                    			<th>userSeqNo</th>
-                    			<td><input type="text" name="userseqno" class="form-control" /></td>
                     		</tr>
                     		<tr>
                     			<th>주소</th>
