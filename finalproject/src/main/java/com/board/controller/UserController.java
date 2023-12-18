@@ -119,13 +119,13 @@ public class UserController {
 		UserDto ldto=userService.loginUser(dto);
 		if(ldto==null) {
 			System.out.println("회원이 아님");
-			return "redirect:/user/signin_form";
+			return "redirect:/";
 		}else {
 			System.out.println("회원이 맞음");
 			HttpSession session=request.getSession();
 			session.setAttribute("ldto", ldto);//로그인 정보를 session에 저장
 			session.setMaxInactiveInterval(60*10);
-			return "redirect:/banking/main";
+			return "redirect:/user/main";
 		}
 	}
 	
