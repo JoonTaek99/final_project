@@ -10,10 +10,10 @@
 	</insert>
 
 	<select id="loginUser" parameterType="UserDto" resultType="UserDto">
-		SELECT USERNAME, USEREMAIL, USERPASSWORD, USERACCESSTOKEN, USERREFRESHTOKEN,
-				USERSEQNO
+		SELECT EMAIL, NAME, PASSWORD, USERACCESSTOKEN, USERREFRESHTOKEN,
+				USERSEQNO, ADDRESS, BIRTH, PHONE
 		FROM user
-		WHERE USEREMAIL=#{useremail} AND USERPASSWORD=#{userpassword}
+		WHERE EMAIL=#{email} AND PASSWORD=#{password}
 	</select>
 </mapper>
 
