@@ -75,7 +75,7 @@ public class BankingController {
 		
 		// json형태의 문자열을 json객체로 변환 -> 값을 가져오기 편함
 		result=(JSONObject)new JSONParser().parse(response.toString());
-		System.out.println("result:"+result.get("res_list"));
+//		System.out.println("result:"+result.get("res_list"));
 		
 		
 		return result;
@@ -106,7 +106,7 @@ public class BankingController {
 	@ResponseBody
 	@GetMapping("/balance")
 	public JSONObject balance(String fintech_use_num,HttpServletRequest request) throws IOException, ParseException {
-		System.out.println("잔액조회하기");
+//		System.out.println("잔액조회하기");
 		HttpURLConnection conn=null;
 		JSONObject result=null;
 		
@@ -136,7 +136,7 @@ public class BankingController {
 		}
 		
 		result=(JSONObject)new JSONParser().parse(response.toString());
-		System.out.println("잔액:"+result.get("balance_amt"));
+//		System.out.println("잔액:"+result.get("balance_amt"));
 		
 		return result;
 	}
@@ -206,7 +206,6 @@ public class BankingController {
 		for (int i = 0; i < 9; i++) {
 			createNum+=((int)(Math.random()*10))+"";
 		}
-		System.out.println("이용기관부여번호9자리생성:"+createNum);
 		return createNum;
 	} 
 	//현재시간 구하는 메서드

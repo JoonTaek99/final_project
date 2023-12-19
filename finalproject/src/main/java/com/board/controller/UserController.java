@@ -12,10 +12,13 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.board.command.UserUpdateCommand;
 import com.board.dtos.UserDto;
 import com.board.service.UserService;
 
@@ -36,6 +39,13 @@ public class UserController {
 		System.out.println("회원가입이동");
 		return "user/signup";
 	}
+	
+	//회원가입폼 이동
+		@GetMapping("/main")
+		public String main() {
+			System.out.println("메인 페이지 이동");
+			return "user/main";
+		}
 	
 	//사용자 인증을 완료하면 code들을 반환해준다.
 	//반환받은 code를 이용해서 토큰 발급 요청을 진행한다.
@@ -131,6 +141,31 @@ public class UserController {
 		session.invalidate();
 		return "redirect:/";
 	}
+	
+	@GetMapping(value = "/userInfo")
+   public String userInfo(Model model, HttpServletRequest request) {
+      System.out.println("유저정보창으로 이동");
+      UserDto dto = userService.userInfo(request);
+      
+      model.addAttribute("dto", dto);
+      
+      return "user/userInfo";
+   }
+	
+	@PostMapping(value = "/userUpdate")
+	   public String userUpdate(@Validated UserUpdateCommand userUpdateCommand
+	                              ,BindingResult result) {
+	      System.out.println("유저정보 수정시작");
+	      if(result.hasErrors()) {
+	         System.out.println("수정내용을 모두 입력해주세요");
+	         return "user/userInfo";
+	      }
+	      userService.updateUser(userUpdateCommand);
+	      
+	      return "redirect:/user/userInfo";
+	      
+	   }
+	
 }
 
 
