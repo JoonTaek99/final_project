@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.board.mapper.CalMapper;
 import com.board.utils.Util;
+import com.board.command.InsertCalCommand;
 import com.board.dtos.CalDto;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -67,27 +68,31 @@ public class CalService {
    public List<CalDto> calViewList(String yyyyMM){
       return calmapper.calViewList(yyyyMM);
    }
-//   
-//   
-//   public boolean insertCalBoard(InsertCalCommand insertCalCommand) throws Exception {
-//      // command --> dto로  값을 이동
-//      // DB에서는 mdate 컬럼 , command에서는 year, month... : 12자리로 변환작업
-//      String mdate=insertCalCommand.getYear()
-//                +Util.isTwo(insertCalCommand.getMonth()+"")
-//                +Util.isTwo(insertCalCommand.getDate()+"")
-//                +Util.isTwo(insertCalCommand.getHour()+"")
-//                +Util.isTwo(insertCalCommand.getMin()+"");
-//      
-//      //command --> dto 값 복사 
-//      CalDto dto=new CalDto();
-//      dto.setTitle(insertCalCommand.getTitle());
-//      dto.setContent(insertCalCommand.getContent());
-//      dto.setMdate(mdate);
-//      
-//      int count=calmapper.insertCalBoard(dto);
-//      
-//      return count>0?true:false;
-//   }
+   
+   
+   public boolean insertCalBoard(InsertCalCommand insertCalCommand, String ykiho) throws Exception {
+      // command --> dto로  값을 이동
+      // DB에서는 mdate 컬럼 , command에서는 year, month... : 12자리로 변환작업
+      String mdate=insertCalCommand.getYear()
+                +Util.isTwo(insertCalCommand.getMonth()+"")
+                +Util.isTwo(insertCalCommand.getDate()+"")
+                +Util.isTwo(insertCalCommand.getHour()+"")
+                +Util.isTwo(insertCalCommand.getMin()+"");
+      
+      System.out.println(ykiho);
+      //command --> dto 값 복사 
+      CalDto dto = new CalDto();
+      dto.setTitle(insertCalCommand.getTitle());
+      dto.setContent(insertCalCommand.getContent());
+      dto.setMdate(mdate);
+      dto.setEmail(insertCalCommand.getEmail());
+      dto.setYkiho(ykiho);
+      
+      int count=calmapper.insertCalBoard(dto);
+      
+      return count>0?true:false;
+   }
+   
 //   public List<CalDto> calBoardList(String id,String yyyyMMdd) {
 //      return calmapper.calBoardList(id,yyyyMMdd);
 //   }

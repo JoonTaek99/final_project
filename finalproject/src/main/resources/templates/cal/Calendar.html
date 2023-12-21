@@ -70,10 +70,10 @@
    
    
    onload=function(){
-	   var ykiho = document.getElementById("ykiho").value;
-	   console.log(ykiho);
-	   $.ajax({
-           url: "/hos/cal",
+      var ykiho = document.getElementById("ykiho").value;
+      console.log(ykiho);
+      $.ajax({
+           url: "/cal/cal",
            method: "get",
            data: { "ykiho": ykiho },
            dataType: "json",
@@ -98,18 +98,18 @@
 <body>
 <div layout:fragment="content">
    <div id="container1">
-   		<div id="list"></div>
+         <div id="list"></div>
       <input type="hidden" th:value="${ykiho}" id="ykiho" />
       <div class="cal">
          <div id="ctitle">
-            <a th:href="@{/hos/calendar(year=${calMap.year-1},month=${calMap.month})}">◀</a>
-            <a th:href="@{/hos/calendar(year=${calMap.year},month=${calMap.month-1})}">◁</a>
+            <a th:href="@{/cal/calendar(year=${calMap.year-1},month=${calMap.month})}">◀</a>
+            <a th:href="@{/cal/calendar(year=${calMap.year},month=${calMap.month-1})}">◁</a>
             <span class="y" th:text="${calMap.year}"></span>
             <span>년</span>
             <span class="m" th:text="${calMap.month}"></span>
             <span>월</span>
-            <a th:href="@{/hos/calendar(year=${calMap.year},month=${calMap.month+1})}">▷</a>
-            <a th:href="@{/hos/calendar(year=${calMap.year+1},month=${calMap.month})}">▶</a>
+            <a th:href="@{/cal/calendar(year=${calMap.year},month=${calMap.month+1})}">▷</a>
+            <a th:href="@{/cal/calendar(year=${calMap.year+1},month=${calMap.month})}">▶</a>
          </div>
          <div id="thead">
             <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
@@ -121,9 +121,9 @@
             <th:block th:each="i:${#numbers.sequence(1,calMap.lastDay)}">
                <div>
                   <a class="d" th:text="${i}" th:style="'color:'+${@util.fontColor(i, calMap.dayOfWeek)}"
-                     th:href="@{/hos/calBoardList(year=${calMap.year},month=${calMap.month},date=${i})}"
+                     th:href="@{/cal/calBoardList(year=${calMap.year},month=${calMap.month},date=${i})}"
                   ></a>
-               <a th:href="@{/hos/addCalBoardForm(year=${calMap.year},month=${calMap.month},date=${i})}">
+               <a th:href="@{/cal/addCalBoardForm(year=${calMap.year},month=${calMap.month},date=${i},ykiho=${ykiho})}">
                                  <img class="pen" th:src="@{/css/pen.png}" />
                               </a>
                   [(${@util.getCalViewList(i,clist)})]
@@ -135,14 +135,3 @@
 </div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
