@@ -65,8 +65,8 @@ public class CalService {
       return map;
    }
 
-   public List<CalDto> calViewList(String yyyyMM){
-      return calmapper.calViewList(yyyyMM);
+   public List<CalDto> calViewList(String yyyyMM,String ykiho){
+      return calmapper.calViewList(yyyyMM, ykiho);
    }
    
    
@@ -97,9 +97,9 @@ public class CalService {
 //      return calmapper.calBoardList(id,yyyyMMdd);
 //   }
 //   
-//   public int calBoardCount(String yyyyMMdd) {
-//      return calmapper.calBoardCount(yyyyMMdd);
-//   }
+   public int calBoardCount(String yyyyMMdd) {
+      return calmapper.calBoardCount(yyyyMMdd);
+   }
 //
 //   public boolean calMulDel(Map<String, String[]> map) {
 //      return calmapper.calMulDel(map);
@@ -127,24 +127,22 @@ public class CalService {
 //   }
 //   
 //   public boolean insertCalReply(InsertCalReplyCommand insertCalCommand) throws Exception {
-//	     
-//	      CalDto dto=new CalDto();
-//	      dto.setSeq(insertCalCommand.getSeq());
-//	      dto.setId(insertCalCommand.getId());
-//	      dto.setContent(insertCalCommand.getContent());
-//	      
-//	      int count=calReplyMapper.insertCalReplyBoard(dto);
-//	     
-//	      return count>0?true:false;
-//	   }
+//        
+//         CalDto dto=new CalDto();
+//         dto.setSeq(insertCalCommand.getSeq());
+//         dto.setId(insertCalCommand.getId());
+//         dto.setContent(insertCalCommand.getContent());
+//         
+//         int count=calReplyMapper.insertCalReplyBoard(dto);
+//        
+//         return count>0?true:false;
+//      }
 //   
 //   
 //   public List<CalDto> showCalReply(int seq) throws Exception{    
 //       return calReplyMapper.getCalReplyBoard(seq);
 //   }
 }
-
-
 
 
 

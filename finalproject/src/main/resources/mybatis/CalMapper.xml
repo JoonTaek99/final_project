@@ -37,14 +37,14 @@
    </delete>
    
    <select id="calViewList" parameterType="Map" resultType="CalDto">
-	   SELECT rn, seq, title,content, mdate, regdate   
-	   from   (SELECT ROW_NUMBER() over(PARTITION BY SUBSTR(mdate,1,8)
-	                                   ORDER BY mdate) rn
-	             , seq, title,content, mdate, regdate
-	          FROM reserveboard
-	          WHERE SUBSTR(mdate,1,6)=#{yyyyMM}
-	          ) cal
-	   WHERE rn BETWEEN 1 AND 3
+      SELECT rn, seq, email,title,content, ykiho,mdate, regdate   
+      from   (SELECT ROW_NUMBER() over(PARTITION BY SUBSTR(mdate,1,8)
+                                      ORDER BY mdate) rn
+                , seq, email,title,content, ykiho,mdate, regdate
+             FROM reserveboard
+             WHERE ykiho = #{ykiho} AND SUBSTR(mdate,1,6)=#{yyyyMM} 
+             ) cal
+      WHERE rn BETWEEN 1 AND 3
    </select>
    
    <select id="calBoardCount" parameterType="Map"
@@ -55,8 +55,6 @@
 
    
 </mapper>
-
-
 
 
 

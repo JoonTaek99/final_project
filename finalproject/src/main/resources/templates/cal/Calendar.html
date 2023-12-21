@@ -23,7 +23,7 @@
       font-weight:bold;
       font-size:17px;
    }
-   #tbody > div > p{background-color:rgb(255, 128, 0); color:black;}
+   #tbody > div > p{background-color:yellow; color:black;}
    .cp{
       position: absolute;
       left: 20px;
@@ -50,7 +50,7 @@
                               +(date.length<2?"0"+date:date); //8자리 만들기
          if(aDate.nextAll("p").length>0){
             $.ajax({
-               url:"/schedule/calCountAjax",
+               url:"/cal/calCountAjax",
                method:"get",
                data:{"yyyyMMdd":yyyyMMdd}, // 서버로 전달하는 값
                dataType:"json", // 서버에서 전달받은 데이터 타입

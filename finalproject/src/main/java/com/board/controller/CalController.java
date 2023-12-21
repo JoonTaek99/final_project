@@ -65,7 +65,7 @@ public class CalController {
           model.addAttribute("calMap", map);
           model.addAttribute("ykiho", ykiho);
           String yyyyMM=year+Util.isTwo(month);//202311 6자리변환
-          List<CalDto>clist=calService.calViewList(yyyyMM);
+          List<CalDto>clist=calService.calViewList(yyyyMM, ykiho);
           model.addAttribute("clist", clist);
           
           return "cal/Calendar";
@@ -129,8 +129,8 @@ public class CalController {
        
        @GetMapping(value = "/addCalBoardForm")
        public String addCalBoardForm(Model model, InsertCalCommand insertCalCommand, String ykiho) {
-    	   System.out.println("일정추가 폼 이동");
-    	   System.out.println(ykiho);
+          System.out.println("일정추가 폼 이동");
+          System.out.println(ykiho);
           System.out.println(insertCalCommand);
           //addCalBoardfForm 페이지에서 유효값 처리를 위해 insertCalCommand 받고 있기때문에
           model.addAttribute("insertCalCommand", insertCalCommand);
@@ -149,6 +149,15 @@ public class CalController {
           }
           calService.insertCalBoard(insertCalCommand, ykiho);
           return "redirect:/cal/calendar?year="+insertCalCommand.getYear()
-                                  +"&month="+insertCalCommand.getMonth();
+                                  +"&month="+insertCalCommand.getMonth() + "&ykiho="+ykiho;
+       }
+       @ResponseBody
+       @GetMapping(value="/calCountAjax")
+       public Map<String,Integer> calCountAjax(String yyyyMMdd){
+
+          Map<String, Integer>map=new HashMap<>();
+          int count=calService.calBoardCount(yyyyMMdd);
+          map.put("count", count);
+          return map;
        }
 }
