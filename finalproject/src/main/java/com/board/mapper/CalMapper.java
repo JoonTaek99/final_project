@@ -27,4 +27,6 @@ public interface CalMapper {
    //일일의 일정개수 보여주기
    public int calBoardCount(String yyyyMMdd);
    
+   public boolean pay(Map<String, String>map);
+   
 }

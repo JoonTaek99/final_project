@@ -53,6 +53,12 @@
       WHERE SUBSTR(mdate,1,8)=#{yyyyMMdd}
    </select>
 
+   <update id="pay" parameterType="Map">
+      UPDATE useraccount
+      SET MONEY = #{remaining_balance}
+      WHERE FINTECH_USE_NUM=#{fintech_use_num}
+   </update>
+   
    
 </mapper>
 

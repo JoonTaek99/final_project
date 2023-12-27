@@ -29,23 +29,16 @@
    </update>
    
    <select id="userReserve" parameterType="String" resultType="CalDto">
-	   	SELECT YADMNM, MDATE
-	   	FROM RESERVEBOARD
-	   	WHERE EMAIL = #{email}
+         SELECT YADMNM, MDATE
+         FROM RESERVEBOARD
+         WHERE EMAIL = #{email}
    </select>
    
+   <insert id="addAccount" parameterType="AccountDto">
+        INSERT INTO useraccount
+        VALUES(#{fintech_use_num}, #{money})
+   </insert>
+   
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
 
 

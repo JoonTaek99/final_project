@@ -8,7 +8,15 @@
 <style type="text/css">
 </style>
 <script type="text/javascript">
+function redirectToPayForm() {
+	window.open('/cal/payForm', '_blank', 'width=780,height=700');
+}
 
+function backCalendar() {
+    var ykihoValue = document.getElementsByName("ykiho")[0].value;
+    var yadmNmValue = document.getElementsByName("yadmNm")[0].value;
+    location.href = '/cal/calendar?ykiho=' + ykihoValue + '&yadmNm=' + yadmNmValue;
+}
 </script>
 </head>
 <body>
@@ -16,6 +24,7 @@
 <div id="container">
    <h1>일정 추가하기</h1>
    <form th:action="@{/cal/addCalBoard}" method="post" th:object="${insertCalCommand}">
+      <input type="hidden" name="ykiho" th:value="${ykiho}"/>
       <table class="table">
          <tr>
             <th>일정</th>
@@ -77,12 +86,6 @@
             </td>
          </tr>
          <tr>
-            <th>ykiho</th>
-            <td>
-               <input type="text" name="ykiho" th:value="${ykiho}"/>
-            </td>
-         </tr>
-         <tr>
             <th>이메일</th>
             <td>
                <input type="email" name="email" th:value="${session.ldto.email}"/>
@@ -98,11 +101,10 @@
          </tr>
          <tr>
             <td colspan="2">
-            	<input type="button" value="결제"
-                               th:onclick="|location.href='@{/cal/payForm}'|"/>
+                <input type="button" value="결제"
+                               th:onclick="redirectToPayForm()"/>
                <input type="submit" value="예약" />
-               <input type="button" value="이전"
-                               th:onclick="|location.href='@{/cal/calendar}'|"/>
+               <input type="button" value="이전" th:onclick="backCalendar()"/>
             </td>
          </tr>
       </table>

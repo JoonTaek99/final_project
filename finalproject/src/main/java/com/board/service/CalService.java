@@ -69,6 +69,14 @@ public class CalService {
       return calmapper.calViewList(yyyyMM, ykiho);
    }
    
+   public boolean pay(String fintech_use_num, String remaining_balance) {
+	   Map<String, String> map = new HashMap<>();
+	   map.put("fintech_use_num", fintech_use_num);
+	   map.put("remaining_balance", remaining_balance);
+	   return calmapper.pay(map);
+	   
+   }
+   
    
    public boolean insertCalBoard(InsertCalCommand insertCalCommand, String ykiho, String yadmNm) throws Exception {
       // command --> dto로  값을 이동

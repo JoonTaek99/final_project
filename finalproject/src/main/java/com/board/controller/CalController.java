@@ -183,21 +183,17 @@ public class CalController {
                URL apiUrl = new URL("https://testapi.openbanking.or.kr/v2.0/transfer/withdraw/fin_num");
                conn = (HttpURLConnection) apiUrl.openConnection();
 
-               // Set the necessary headers
                conn.setRequestMethod("POST");
                conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
                conn.setRequestProperty("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAxMDQxNTk0Iiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE3MTA2NjM2MzEsImp0aSI6ImI5OTdhOTgzLTM2NDgtNDAzZC05MThjLWU4N2IwMTA5MTk3YyJ9.Te5QQX6ZqRoyZBQHweKiqHtmnr1xSTcjQWJZEPvcENo");
 
-               // Enable input/output streams
                conn.setDoOutput(true);
 
-               // Write the JSON data to the output stream
                try (OutputStream os = conn.getOutputStream()) {
                    byte[] input = requestData.toJSONString().getBytes("utf-8");
                    os.write(input, 0, input.length);
                }
 
-               // Read the response from the server
                try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
                    StringBuilder response = new StringBuilder();
                    String responseLine;
@@ -225,6 +221,17 @@ public class CalController {
    		
    		return "cal/calBoardList";
    	}
+       
+
+       @GetMapping(value = "/pay")
+       public void pay(String fintech_use_num, String remaining_balance) {
+    	   System.out.println("돈 깎아버리기");
+    	   System.out.println(fintech_use_num + ", " + remaining_balance);
+    	   
+    	   calService.pay(fintech_use_num, remaining_balance);
+    	   
+       }
+       
 
        @ResponseBody
        @GetMapping(value="/calCountAjax")

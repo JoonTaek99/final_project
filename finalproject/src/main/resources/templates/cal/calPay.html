@@ -1,78 +1,149 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorate="~{layouts/layout}">
+     layout:decorate="~{layouts/signuplayout}">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script type="text/javascript">
+    onload = function myInfo() {
+        $.ajax({
+            url: "/banking/myinfo",
+            method: "get",
+            dataType: "json",
+            success: function (data) {
+                console.log(data.res_list);
+                var res_list = data.res_list; // 나의 계좌목록 저장
+                // 출력할 내용
+                // 계좌이름
+                // 핀테크이용번호 [은행이름]
+                $("#list").append('<select id="accountDropdown">');
+                for (var i = 0; i < res_list.length; i++) {
+                    $("#accountDropdown").append(
+                        '<option value="' + res_list[i].fintech_use_num + '">'
+                        + res_list[i].account_alias + ' - '
+                        + res_list[i].account_num_masked + ' ['
+                        + res_list[i].bank_name + ']</option>'
+                    );
+                }
+                $("#list").append('</select>');
+            }
+        });
+    }
 
-function payInfo() {
-	var url = "/cal/payinfo";
-    var url = "https://testapi.openbanking.or.kr/v2.0/transfer/withdraw/fin_num";
-    var bank_tran_id = "M202201886U121412982";
-    var cntr_account_type = "N";
-    var cntr_account_num = "100000000007";
-    var dps_print_content = "이용료";
-    var fintech_use_num = "120220188688941194209857";
-    var wd_print_content = "오픈뱅킹출금";
-    var tran_amt = "50000";
-    var tran_dtime = "20231226101055";
-    var req_client_name = "임준택";
-    var req_client_bank_code = "003";
-    var req_client_account_num = "2222222222222222";
-    var req_client_num = "LIMJOONTAEK1234";
-    var transfer_purpose = "TR";
-    var recv_client_name = "김우석";
-    var recv_client_bank_code = "002";
-    var recv_client_account_num = "3333333333333";
+    function insertaccount() {
+        var selectedValue = $("#accountDropdown").val();
+        $.ajax({
+            url: "/banking/insertaccount",
+            method: "get",
+            data: { "fintech_use_num": selectedValue },
+            dataType: "json",
+            success: function (data) {
+                alert("등록이 완료되었습니다.");
 
-    $.ajax({
-        url: "/cal/payinfo",
-        method: "post",
-        headers: {
-            "Content-Type": "application/json; charset=UTF-8",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAxMDQxNTk0Iiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE3MTA2NjM2MzEsImp0aSI6ImI5OTdhOTgzLTM2NDgtNDAzZC05MThjLWU4N2IwMTA5MTk3YyJ9.Te5QQX6ZqRoyZBQHweKiqHtmnr1xSTcjQWJZEPvcENo",
-        },
-        data: JSON.stringify({
-            bank_tran_id: bank_tran_id,
-            cntr_account_type: cntr_account_type,
-            cntr_account_num: cntr_account_num,
-            dps_print_content: dps_print_content,
-            fintech_use_num: fintech_use_num,
-            wd_print_content: wd_print_content,
-            tran_amt: tran_amt,
-            tran_dtime: tran_dtime,
-            req_client_name: req_client_name,
-            req_client_bank_code: req_client_bank_code,
-            req_client_account_num: req_client_account_num,
-            req_client_num: req_client_num,
-            transfer_purpose: transfer_purpose,
-            recv_client_name: recv_client_name,
-            recv_client_bank_code: recv_client_bank_code,
-            recv_client_account_num: recv_client_account_num
-        }),
-        contentType: "application/json; charset=UTF-8", 
-        dataType: "json",
-        success: function (data) {
-            alert("dd");
-        },
-        error: function () {
-            alert("통신실패");
-        }
-    });
-}
+                updatePaymentSelect(selectedValue);
+
+                document.getElementById("usage").value = "20000";
+
+                document.getElementById("currentBalance").value = data.balance_amt;
+
+                var remainingBalance = data.balance_amt - 20000;
+                document.getElementById("remainingBalance").value = remainingBalance;
+
+                $("#moneyDiv").show();
+            },
+            error: function () {
+                alert("등록에 실패했습니다.");
+            }
+        });
+    }
+
+    function payInfo() {
+        var selectedValue = $("#paymentDropdown").val();
+        var remainingBalance = $("#remainingBalance").val();
+
+        $.ajax({
+            url: "/cal/pay",
+            method: "get",
+            data: {"fintech_use_num": selectedValue,"remaining_balance": remainingBalance},
+            dataType: "json",
+            success: function (data) {
+                alert("결제가 완료되었습니다.");
+                
+            },
+            error: function () {
+                alert("결제에 실패했습니다.");
+            }
+        });
+        window.close();
+    }
+    
+    function updatePaymentSelect(selectedValue) {
+        $("#paymentDropdown").append(
+            '<option value="' + selectedValue + '">' + $("#accountDropdown option:selected").text() + '</option>'
+        );
+    }
 </script>
 <style type="text/css">
+    .select-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    select {
+        margin-right: 10px;
+        padding: 8px; 
+        border: 1px solid #ccc; 
+        border-radius: 4px; 
+    }
+
+    button {
+        padding: 8px; 
+        border: 1px solid #007bff; 
+        border-radius: 4px; 
+        background-color: #007bff; 
+        color: #fff; 
+        cursor: pointer;
+    }
+
+    #moneyDiv {
+        display: none; 
+    }
+
+    #usage,
+    #remainingBalance,
+    #currentBalance {
+        padding: 8px; 
+        border: 1px solid #ccc; 
+        border-radius: 4px; 
+        margin-right: 10px; 
+    }
 </style>
 </head>
 <body>
 <div layout:fragment="content">
-<h1>간편결제</h1>
-<div>
-</div>
-    <button onclick="payInfo()">결제</button>
-    <div id="list"></div>
+    <h1>간편결제</h1>
+    
+    <div class="select-container">
+        <select id="accountDropdown"></select>
+        <button onclick="insertaccount()">등록</button>
+    </div>
+
+    <div id="moneyDiv" class="select-container">
+        <p style="display: inline-block;">내 돈</p>
+        <input id="currentBalance" readonly>
+        <p style="display: inline-block;">사용금액</p>
+        <input id="usage" readonly>
+        <p style="display: inline-block;">잔액</p>
+        <input id="remainingBalance" readonly>
+    </div>
+
+    <div class="select-container">
+        <select id="paymentDropdown"></select>
+        <button onclick="payInfo()">결제</button>
+    </div>
 </div>
 </body>
 </html>
