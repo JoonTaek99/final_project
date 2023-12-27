@@ -6,7 +6,6 @@
 <meta charset="UTF-8">
 <title></title>
 <style type="text/css">
-   
 </style>
 <script type="text/javascript">
 
@@ -16,8 +15,7 @@
 <div layout:fragment="content">
 <div id="container">
    <h1>일정 추가하기</h1>
-   <form th:action="@{/cal/addCalBoard}" method="post" 
-                                    th:object="${insertCalCommand}">
+   <form th:action="@{/cal/addCalBoard}" method="post" th:object="${insertCalCommand}">
       <table class="table">
          <tr>
             <th>일정</th>
@@ -73,6 +71,12 @@
             </td>
          </tr>
          <tr>
+            <th>병원이름</th>
+            <td>
+               <input type="text" name="yadmNm" th:value="${yadmNm}"/>
+            </td>
+         </tr>
+         <tr>
             <th>ykiho</th>
             <td>
                <input type="text" name="ykiho" th:value="${ykiho}"/>
@@ -94,8 +98,10 @@
          </tr>
          <tr>
             <td colspan="2">
-               <input type="submit" value="일정추가"/>
-               <input type="button" value="달력"
+            	<input type="button" value="결제"
+                               th:onclick="|location.href='@{/cal/payForm}'|"/>
+               <input type="submit" value="예약" />
+               <input type="button" value="이전"
                                th:onclick="|location.href='@{/cal/calendar}'|"/>
             </td>
          </tr>
@@ -105,9 +111,3 @@
 </div>
 </body>
 </html>
-
-
-
-
-
-

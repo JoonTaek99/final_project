@@ -70,7 +70,7 @@ public class CalService {
    }
    
    
-   public boolean insertCalBoard(InsertCalCommand insertCalCommand, String ykiho) throws Exception {
+   public boolean insertCalBoard(InsertCalCommand insertCalCommand, String ykiho, String yadmNm) throws Exception {
       // command --> dto로  값을 이동
       // DB에서는 mdate 컬럼 , command에서는 year, month... : 12자리로 변환작업
       String mdate=insertCalCommand.getYear()
@@ -87,6 +87,7 @@ public class CalService {
       dto.setMdate(mdate);
       dto.setEmail(insertCalCommand.getEmail());
       dto.setYkiho(ykiho);
+      dto.setYadmNm(yadmNm);
       
       int count=calmapper.insertCalBoard(dto);
       
@@ -127,16 +128,16 @@ public class CalService {
 //   }
 //   
 //   public boolean insertCalReply(InsertCalReplyCommand insertCalCommand) throws Exception {
-//        
-//         CalDto dto=new CalDto();
-//         dto.setSeq(insertCalCommand.getSeq());
-//         dto.setId(insertCalCommand.getId());
-//         dto.setContent(insertCalCommand.getContent());
-//         
-//         int count=calReplyMapper.insertCalReplyBoard(dto);
-//        
-//         return count>0?true:false;
-//      }
+//	     
+//	      CalDto dto=new CalDto();
+//	      dto.setSeq(insertCalCommand.getSeq());
+//	      dto.setId(insertCalCommand.getId());
+//	      dto.setContent(insertCalCommand.getContent());
+//	      
+//	      int count=calReplyMapper.insertCalReplyBoard(dto);
+//	     
+//	      return count>0?true:false;
+//	   }
 //   
 //   
 //   public List<CalDto> showCalReply(int seq) throws Exception{    

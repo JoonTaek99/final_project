@@ -22,7 +22,6 @@
    </where> 
       ORDER BY BOARD_SEQ DESC
    </select>
-   
    <insert id="insertReview" parameterType="reviewDto"
       useGeneratedKeys="true" keyProperty="board_seq">
       INSERT INTO BOARD
@@ -39,18 +38,17 @@
       WHERE board_seq=#{board_seq}
    </update>
    
+    <select id="getBoard" parameterType="Integer" resultType="reviewDto">
+      SELECT BOARD_SEQ, EMAIL,HOS_NAME ,TITLE, CONTENT, REGDATE
+      FROM BOARD 
+      WHERE BOARD_SEQ = #{board_seq}
+   </select>
+   
       <select id="getPCount" resultType="int">
       SELECT CEIL(COUNT(*)/10) pageCount 
       FROM BOARD
       WHERE DELFLAG = "N"
    </select>
-   
-   <select id="getSelectList" parameterType="String" resultType="reviewDto">
-		SELECT BOARD_SEQ, EMAIL, TITLE, HOS_NAME, CONTENT, REGDATE, REFER, READCOUNT 
-		FROM BOARD
-		WHERE HOS_NAME LIKE CONCAT('%', #{hos_name}, '%') 
-	</select>
-   
 </mapper>
 
 

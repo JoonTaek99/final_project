@@ -1,8 +1,13 @@
 package com.board.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,6 +18,9 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -24,7 +32,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,26 +43,28 @@ import org.w3c.dom.NodeList;
 
 import com.board.command.InsertCalCommand;
 import com.board.dtos.CalDto;
+import com.board.dtos.UserDto;
 import com.board.service.CalService;
 import com.board.utils.Util;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping(value = "/cal")
 public class CalController {
    
-   @Autowired 
+   @Autowired
    CalService calService;
    
     @GetMapping(value="/calendar")
-       public String calendar(Model model, HttpServletRequest request, String ykiho) {
+       public String calendar(Model model, HttpServletRequest request, String ykiho, String yadmNm) {
           System.out.println("병원의 예약 현황 보기");
-          System.out.println(ykiho);
+          System.out.println(ykiho + ", " + yadmNm);
           //달력에서 일일별 일정목록 구하기
           String year=request.getParameter("year");
           String month=request.getParameter("month");
-          
+         
           if(year==null||month==null) {
              Calendar cal=Calendar.getInstance();
              year=cal.get(Calendar.YEAR)+"";
@@ -64,10 +76,11 @@ public class CalController {
           Map<String, Integer>map=calService.makeCalendar(request);
           model.addAttribute("calMap", map);
           model.addAttribute("ykiho", ykiho);
+          model.addAttribute("yadmNm", yadmNm);
           String yyyyMM=year+Util.isTwo(month);//202311 6자리변환
           List<CalDto>clist=calService.calViewList(yyyyMM, ykiho);
           model.addAttribute("clist", clist);
-          
+         
           return "cal/Calendar";
        }
        
@@ -100,7 +113,7 @@ public class CalController {
                
                for (int i = 0; i < itemList.getLength(); i++) {
                    Node itemNode = itemList.item(i);
-                   Map<String, String>map = new HashMap<>();   
+                   Map<String, String>map = new HashMap<>();  
                    if (itemNode.getNodeType() == Node.ELEMENT_NODE) {
                        Element itemElement = (Element) itemNode;
                        String yadmNm = itemElement.getElementsByTagName("yadmNm").item(0).getTextContent();
@@ -128,29 +141,91 @@ public class CalController {
        
        
        @GetMapping(value = "/addCalBoardForm")
-       public String addCalBoardForm(Model model, InsertCalCommand insertCalCommand, String ykiho) {
+       public String addCalBoardForm(Model model, InsertCalCommand insertCalCommand, String ykiho, String yadmNm) {
           System.out.println("일정추가 폼 이동");
-          System.out.println(ykiho);
+          System.out.println("병원이름: " + yadmNm);
           System.out.println(insertCalCommand);
           //addCalBoardfForm 페이지에서 유효값 처리를 위해 insertCalCommand 받고 있기때문에
           model.addAttribute("insertCalCommand", insertCalCommand);
           model.addAttribute("ykiho",ykiho);
+          model.addAttribute("yadmNm", yadmNm);
           return "cal/addCalBoardForm";
+       }
+       
+       @GetMapping(value = "payForm")
+       public String payForm() {
+    	   System.out.println("결제 폼 이동");
+    	   return "cal/calPay";
        }
        
        @PostMapping(value = "/addCalBoard")
        public String addCalBoard(@Validated InsertCalCommand insertCalCommand,
-                           BindingResult result, String ykiho) throws Exception {
+                           BindingResult result, String ykiho, String yadmNm) throws Exception {
           System.out.println("일정추가하기");
           System.out.println(insertCalCommand);
           if(result.hasErrors()) {
              System.out.println("글을 모두 입력해야 함");
              return "cal/addCalBoardForm";
           }
-          calService.insertCalBoard(insertCalCommand, ykiho);
-          return "redirect:/cal/calendar?year="+insertCalCommand.getYear()
-                                  +"&month="+insertCalCommand.getMonth() + "&ykiho="+ykiho;
+          calService.insertCalBoard(insertCalCommand, ykiho, yadmNm);
+          System.out.println("성공");
+          return "redirect:/cal/calendar?ykiho=" + ykiho;
        }
+       
+       
+       @PostMapping("/payinfo")
+       public ResponseEntity<String> payInfo(@RequestBody JSONObject requestData) throws IOException {
+           System.out.println("결제하기[계좌]");
+
+           HttpURLConnection conn = null;
+
+           try {
+               URL apiUrl = new URL("https://testapi.openbanking.or.kr/v2.0/transfer/withdraw/fin_num");
+               conn = (HttpURLConnection) apiUrl.openConnection();
+
+               // Set the necessary headers
+               conn.setRequestMethod("POST");
+               conn.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+               conn.setRequestProperty("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAxMDQxNTk0Iiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE3MTA2NjM2MzEsImp0aSI6ImI5OTdhOTgzLTM2NDgtNDAzZC05MThjLWU4N2IwMTA5MTk3YyJ9.Te5QQX6ZqRoyZBQHweKiqHtmnr1xSTcjQWJZEPvcENo");
+
+               // Enable input/output streams
+               conn.setDoOutput(true);
+
+               // Write the JSON data to the output stream
+               try (OutputStream os = conn.getOutputStream()) {
+                   byte[] input = requestData.toJSONString().getBytes("utf-8");
+                   os.write(input, 0, input.length);
+               }
+
+               // Read the response from the server
+               try (BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                   StringBuilder response = new StringBuilder();
+                   String responseLine;
+                   while ((responseLine = br.readLine()) != null) {
+                       response.append(responseLine.trim());
+                   }
+
+                   System.out.println("Response from Open Banking API: " + response.toString());
+
+                   return new ResponseEntity<>(response.toString(), HttpStatus.OK);
+               }
+           } catch (Exception e) {
+               e.printStackTrace();
+               return new ResponseEntity<>("Error during payment", HttpStatus.INTERNAL_SERVER_ERROR);
+           } finally {
+               if (conn != null) {
+                   conn.disconnect();
+               }
+           }
+       }
+       
+       @GetMapping(value = "/calBoardList")
+       public String calBoardList() {
+   		System.out.println("일정목록보기");
+   		
+   		return "cal/calBoardList";
+   	}
+
        @ResponseBody
        @GetMapping(value="/calCountAjax")
        public Map<String,Integer> calCountAjax(String yyyyMMdd){
@@ -160,4 +235,19 @@ public class CalController {
           map.put("count", count);
           return map;
        }
+   	//이용기관 부여번호 9자리를 생성하는 메서드
+   	public String createNum() {
+   		String createNum="";
+   		for (int i = 0; i < 9; i++) {
+   			createNum+=((int)(Math.random()*10))+"";
+   		}
+   		System.out.println("이용기관부여번호9자리생성:"+createNum);
+   		return createNum;
+   	}
+   	//현재시간 구하는 메서드
+   	public String getDateTime() {
+   		LocalDateTime now=LocalDateTime.now(); //현재시간 구하기
+   		String formatNow=now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+   		return formatNow;
+   	}
 }

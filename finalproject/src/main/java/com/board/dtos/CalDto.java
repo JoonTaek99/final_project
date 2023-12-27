@@ -14,13 +14,15 @@ public class CalDto {
    private String mdate;
    private Date regdate;
    private String ykiho;
+   private String yadmNm;
    
    public CalDto() {
 	      super();
 	      // TODO Auto-generated constructor stub
 	   }
 
-public CalDto(int seq, String email, String title, String content, String mdate, Date regdate, String ykiho) {
+public CalDto(int seq, String email, String title, String content, String mdate, Date regdate, String ykiho,
+		String yadmNm) {
 	super();
 	this.seq = seq;
 	this.email = email;
@@ -29,12 +31,13 @@ public CalDto(int seq, String email, String title, String content, String mdate,
 	this.mdate = mdate;
 	this.regdate = regdate;
 	this.ykiho = ykiho;
+	this.yadmNm = yadmNm;
 }
 
 @Override
 public String toString() {
 	return "CalDto [seq=" + seq + ", email=" + email + ", title=" + title + ", content=" + content + ", mdate=" + mdate
-			+ ", regdate=" + regdate + ", ykiho=" + ykiho + "]";
+			+ ", regdate=" + regdate + ", ykiho=" + ykiho + ", yadmNm=" + yadmNm + "]";
 }
 
 public int getSeq() {
@@ -92,8 +95,17 @@ public String getYkiho() {
 public void setYkiho(String ykiho) {
 	this.ykiho = ykiho;
 }
+
+public String getYadmNm() {
+	return yadmNm;
+}
+
+public void setYadmNm(String yadmNm) {
+	this.yadmNm = yadmNm;
+}
    
    
-   
+
+
    
 }

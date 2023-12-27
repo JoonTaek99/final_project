@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.board.dtos.UserDto;
 
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
@@ -27,9 +29,7 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/banking")
 public class BankingController {
 	
-//	@Autowired
-//	private OpenBankingFeign openBankingFeign;
-//	
+
 	@GetMapping("/main")
 	public String main() {
 		return "main";
@@ -75,7 +75,9 @@ public class BankingController {
 		
 		// json형태의 문자열을 json객체로 변환 -> 값을 가져오기 편함
 		result=(JSONObject)new JSONParser().parse(response.toString());
-//		System.out.println("result:"+result.get("res_list"));
+		System.out.println("result:"+result.get("res_list"));
+		
+		
 		
 		
 		return result;
@@ -106,13 +108,14 @@ public class BankingController {
 	@ResponseBody
 	@GetMapping("/balance")
 	public JSONObject balance(String fintech_use_num,HttpServletRequest request) throws IOException, ParseException {
-//		System.out.println("잔액조회하기");
+		System.out.println("잔액조회하기");
 		HttpURLConnection conn=null;
 		JSONObject result=null;
+
 		
 		HttpSession session=request.getSession();
 		UserDto ldto=(UserDto)session.getAttribute("ldto");
-		
+		System.out.println(fintech_use_num);
 		URL url=new URL("https://testapi.openbanking.or.kr/v2.0/account/balance/fin_num?"
 				      + "bank_tran_id=M202201886U"+createNum()
 				      + "&fintech_use_num="+fintech_use_num
@@ -136,7 +139,9 @@ public class BankingController {
 		}
 		
 		result=(JSONObject)new JSONParser().parse(response.toString());
-//		System.out.println("잔액:"+result.get("balance_amt"));
+
+		
+
 		
 		return result;
 	}
@@ -184,6 +189,8 @@ public class BankingController {
 		result=(JSONObject)new JSONParser().parse(response.toString());
 		System.out.println("거래내역:"+result.get("res_list"));
 		
+		
+		
 		return result;
 	}
 	
@@ -215,7 +222,6 @@ public class BankingController {
 		return formatNow;
 	}
 }
-
 
 
 

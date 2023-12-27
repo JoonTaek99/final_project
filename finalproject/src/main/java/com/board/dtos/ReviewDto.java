@@ -16,83 +16,82 @@ public class ReviewDto {
    private int refer;
    private String readCount;
    private String delflag;
-   
 public int getBoard_seq() {
-   return board_seq;
+	return board_seq;
 }
 public void setBoard_seq(int board_seq) {
-   this.board_seq = board_seq;
+	this.board_seq = board_seq;
 }
 public String getEmail() {
-   return email;
+	return email;
 }
 public void setEmail(String email) {
-   this.email = email;
+	this.email = email;
 }
 public String getTitle() {
-   return title;
+	return title;
 }
 public void setTitle(String title) {
-   this.title = title;
+	this.title = title;
 }
 public String getHos_name() {
-   return hos_name;
+	return hos_name;
 }
 public void setHos_name(String hos_name) {
-   this.hos_name = hos_name;
+	this.hos_name = hos_name;
 }
 public String getContent() {
-   return content;
+	return content;
 }
 public void setContent(String content) {
-   this.content = content;
+	this.content = content;
 }
 public Date getRegdate() {
-   return regdate;
+	return regdate;
 }
 public void setRegdate(Date regdate) {
-   this.regdate = regdate;
+	this.regdate = regdate;
 }
 public int getRefer() {
-   return refer;
+	return refer;
 }
 public void setRefer(int refer) {
-   this.refer = refer;
+	this.refer = refer;
 }
 
 public String getReadCount() {
-   return readCount;
+	return readCount;
 }
 public void setReadCount(String readCount) {
-   this.readCount = readCount;
+	this.readCount = readCount;
 }
 public String getDelflag() {
-   return delflag;
+	return delflag;
 }
 public void setDelflag(String delflag) {
-   this.delflag = delflag;
+	this.delflag = delflag;
 }
 @Override
 public String toString() {
-   return "ReviewDto [board_seq=" + board_seq + ", email=" + email + ", title=" + title + ", hos_name=" + hos_name
-         + ", content=" + content + ", regdate=" + regdate + ", refer=" + refer + ",, readCount=" + readCount + ", delflag=" + delflag + "]";
+	return "ReviewDto [board_seq=" + board_seq + ", email=" + email + ", title=" + title + ", hos_name=" + hos_name
+			+ ", content=" + content + ", regdate=" + regdate + ", refer=" + refer + ",, readCount=" + readCount + ", delflag=" + delflag + "]";
 }
 public ReviewDto(int board_seq, String email, String title, String hos_name, String content, Date regdate, int refer,
-      int step, int depth, String readCount, String delflag) {
-   super();
-   this.board_seq = board_seq;
-   this.email = email;
-   this.title = title;
-   this.hos_name = hos_name;
-   this.content = content;
-   this.regdate = regdate;
-   this.refer = refer;
-   this.readCount = readCount;
-   this.delflag = delflag;
+		int step, int depth, String readCount, String delflag) {
+	super();
+	this.board_seq = board_seq;
+	this.email = email;
+	this.title = title;
+	this.hos_name = hos_name;
+	this.content = content;
+	this.regdate = regdate;
+	this.refer = refer;
+	this.readCount = readCount;
+	this.delflag = delflag;
 }
 public ReviewDto() {
-   super();
-   // TODO Auto-generated constructor stub
+	super();
+	// TODO Auto-generated constructor stub
 }
    
 

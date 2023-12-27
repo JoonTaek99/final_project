@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartRequest;
 
 import com.board.command.InsertReviewCommand;
+import com.board.command.UpdateReviewCommand;
 import com.board.dtos.ReviewDto;
 import com.board.service.ReviewService;
 import com.board.utils.Paging;
@@ -51,6 +52,8 @@ public class ReviewController {
      //페이지 수 구하기 
       int pcount=reviewService.getPCount();
      model.addAttribute("pcount", pcount);
+     System.out.println("pcount : " +pcount);
+     System.out.println("pnum : " +pnum);
             
      //---페이지에 페이징 처리 기능 추가
      //필요한 값: 페이지수, 페이지번호, 페이지범위(페이지수)
@@ -64,30 +67,6 @@ public class ReviewController {
       
       return "review/reviewList";
    }
-   
-   @GetMapping(value = "/selectList")
-	public String SelectList(Model model, String hos_name, HttpServletRequest request,HttpServletResponse response,String pnum) {
-		System.out.println("검색된 후기 목록 보기");
-		HttpSession session=request.getSession();
-		 if(pnum==null) {
-	         pnum=(String)session.getAttribute("pnum");//현재 조회중인 페이지번호
-	      }else {
-	         //새로 페이지를 요청할 경우 세션에 저장
-	         session.setAttribute("pnum", pnum);
-	      }
-		 System.out.println(pnum + "," + hos_name);
-		 
-		 int pcount=reviewService.getPCount();
-	     model.addAttribute("pcount", pcount);
-	     
-	     Map<String, Integer>map=Paging.pagingValue(pcount, pnum, 10);
-	     model.addAttribute("pMap", map);
-	     
-		List<ReviewDto> list = reviewService.getSelectList(hos_name);
-		System.out.println(list);
-		model.addAttribute("list", list);
-		return "review/reviewList";
-	}
    
    @GetMapping(value = "/reviewInsert")
    public String boardInsertForm(Model model) {
@@ -112,17 +91,17 @@ public class ReviewController {
       
       return "redirect:/review/reviewList";
    }
-//   
-//   @GetMapping(value = "/reviewDetail")
-//   public String boardDetail(int board_seq, Model model, NewsUpdateBoardCommand newsUpdateBoardCommand) {
-//      ReviewDto dto = reviewService.getBoard(board_seq);
-//      model.addAttribute("updateBoardCommand", new NewsUpdateBoardCommand());
-//      model.addAttribute("dto",dto);
-//      int seq = newsUpdateBoardCommand.getBoard_seq();
-//      newsBoardService.readCount(seq);//조회수 증가
-//
-//      return "news/newsBoardDetail";
-//   }
+   
+   @GetMapping(value = "/reviewDetail")
+   public String boardDetail(int board_seq, Model model, UpdateReviewCommand updateReviewCommand) {
+	   ReviewDto dto = reviewService.getBoard(board_seq);
+      model.addAttribute("updateReviewCommand", new UpdateReviewCommand());
+      model.addAttribute("dto",dto);
+      int seq = updateReviewCommand.getBoard_seq();
+      reviewService.readCount(seq);//조회수 증가
+
+      return "review/reviewDetail";
+   }
 //   
 //   @PostMapping(value = "/newsBoardUpdate")
 //   public String boardUpdate(@Validated NewsUpdateBoardCommand updateBoardCommand

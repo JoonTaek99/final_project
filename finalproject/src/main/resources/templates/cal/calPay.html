@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript">
+
+function payInfo() {
+	var url = "/cal/payinfo";
+    var url = "https://testapi.openbanking.or.kr/v2.0/transfer/withdraw/fin_num";
+    var bank_tran_id = "M202201886U121412982";
+    var cntr_account_type = "N";
+    var cntr_account_num = "100000000007";
+    var dps_print_content = "이용료";
+    var fintech_use_num = "120220188688941194209857";
+    var wd_print_content = "오픈뱅킹출금";
+    var tran_amt = "50000";
+    var tran_dtime = "20231226101055";
+    var req_client_name = "임준택";
+    var req_client_bank_code = "003";
+    var req_client_account_num = "2222222222222222";
+    var req_client_num = "LIMJOONTAEK1234";
+    var transfer_purpose = "TR";
+    var recv_client_name = "김우석";
+    var recv_client_bank_code = "002";
+    var recv_client_account_num = "3333333333333";
+
+    $.ajax({
+        url: "/cal/payinfo",
+        method: "post",
+        headers: {
+            "Content-Type": "application/json; charset=UTF-8",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAxMDQxNTk0Iiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE3MTA2NjM2MzEsImp0aSI6ImI5OTdhOTgzLTM2NDgtNDAzZC05MThjLWU4N2IwMTA5MTk3YyJ9.Te5QQX6ZqRoyZBQHweKiqHtmnr1xSTcjQWJZEPvcENo",
+        },
+        data: JSON.stringify({
+            bank_tran_id: bank_tran_id,
+            cntr_account_type: cntr_account_type,
+            cntr_account_num: cntr_account_num,
+            dps_print_content: dps_print_content,
+            fintech_use_num: fintech_use_num,
+            wd_print_content: wd_print_content,
+            tran_amt: tran_amt,
+            tran_dtime: tran_dtime,
+            req_client_name: req_client_name,
+            req_client_bank_code: req_client_bank_code,
+            req_client_account_num: req_client_account_num,
+            req_client_num: req_client_num,
+            transfer_purpose: transfer_purpose,
+            recv_client_name: recv_client_name,
+            recv_client_bank_code: recv_client_bank_code,
+            recv_client_account_num: recv_client_account_num
+        }),
+        contentType: "application/json; charset=UTF-8", 
+        dataType: "json",
+        success: function (data) {
+            alert("dd");
+        },
+        error: function () {
+            alert("통신실패");
+        }
+    });
+}
+</script>
+<style type="text/css">
+</style>
+</head>
+<body>
+<div layout:fragment="content">
+<h1>간편결제</h1>
+<div>
+</div>
+    <button onclick="payInfo()">결제</button>
+    <div id="list"></div>
+</div>
+</body>
+</html>

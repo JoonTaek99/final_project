@@ -12,7 +12,7 @@ import com.board.dtos.ReviewDto;
 public interface ReviewMapper {
 
    
-     // 글 목록
+	  // 글 목록
       public List<ReviewDto> getAllList(Map<String,String>map);
       
       // 글 상세 조회
@@ -32,15 +32,4 @@ public interface ReviewMapper {
       
       //페이징
       public int getPCount();
-      
-	   // 검색관련 목록
-	  	public List<ReviewDto> getSelectList(String hos_name);
-      
 }
-
-
-
-
-
-
-
