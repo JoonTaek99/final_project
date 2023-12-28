@@ -45,12 +45,12 @@ onload=function myInfo(){
       }
    });
 }
-
 function insertaccount(fintech_use_num) {
+
     $.ajax({
         url: "/banking/insertaccount",
         method: "get",
-        data: { "fintech_use_num": fintech_use_num },
+        data: {"fintech_use_num": fintech_use_num },
         dataType: "json",
         success: function (data) {
             alert("등록이 완료되었습니다.");
@@ -62,6 +62,9 @@ function insertaccount(fintech_use_num) {
     });
 }
 
+function totalmoney(){
+   location.href="/banking/total";
+}
 
 //계좌등록하기(센터인증 이용기관용: 사용자 인증후에 계좌 등록 가능)
 function addAccount(){
@@ -87,6 +90,7 @@ function addAccount(){
 <body>
 
 <div layout:fragment="content">
+<button onclick="totalmoney()"></button>
    <div id="list" >
    </div>
 </div>

@@ -226,9 +226,10 @@ public class CalController {
        @GetMapping(value = "/pay")
        public void pay(String fintech_use_num, String remaining_balance) {
     	   System.out.println("결제하기");
-    	   System.out.println(fintech_use_num + ", " + remaining_balance);
+    	   int money = Integer.parseInt(remaining_balance);
+    	   System.out.println(fintech_use_num + ", " + money);
     	   
-    	   calService.pay(fintech_use_num, remaining_balance);
+    	   calService.pay(fintech_use_num, money);
     	   
        }
        

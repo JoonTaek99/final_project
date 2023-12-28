@@ -23,4 +23,10 @@ public interface UserMapper {
       
       public int addAccount(Map<String, Object>map);
       
+      public List<AccountDto> getMyAccount(int userseqno);
+      
+      
+      public int totalMoney(int userseqno);
+
+      
 }

@@ -61,4 +61,23 @@ public class UserService {
          int count = userMapper.addAccount(map);
          return count>0?true:false;
       }
+   
+   
+   public int totalMoney(HttpServletRequest requset) {
+	      UserDto udto = (UserDto)requset.getSession().getAttribute("ldto");
+	      int userseqno = udto.getUserseqno();
+	      return userMapper.totalMoney(userseqno);
+	   }
+
+   
+   public List<AccountDto> getMyAccount(int userseqno){
+	   System.out.println("service까지"+userseqno);
+	   return userMapper.getMyAccount(userseqno);
+   }
+   
+   
+   
+   
+   
+   
 }

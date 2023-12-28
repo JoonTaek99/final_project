@@ -228,9 +228,35 @@ public class BankingController {
       return str;
    }
    
+   @ResponseBody
+  @GetMapping("/getMyAccount")
+   public List<AccountDto> getMyAccount(Model model, HttpServletRequest request) {
+	  System.out.println("내 계좌 불러오기");
+	  HttpSession session = request.getSession();
+	  UserDto ldto=(UserDto)session.getAttribute("ldto");
+	  int userseqno = ldto.getUserseqno();
+	  System.out.println(userseqno);
+	  
+	  List<AccountDto> list = userService.getMyAccount(userseqno);
+	  System.out.println(list);
+	  model.addAttribute("list", list);
+	  
+	  return list; 
+  }
    
    
-   
+   @ResponseBody
+   @GetMapping("/total")
+   public Integer totalmoney(HttpServletRequest request) {
+      HttpSession session=request.getSession();
+      UserDto ldto=(UserDto)session.getAttribute("ldto");
+      int userseqno = ldto.getUserseqno();
+      
+      Integer totalMoney = userService.totalMoney(request);
+      System.out.println(userService.totalMoney(request));
+      return totalMoney;
+   }
+
    
    
    

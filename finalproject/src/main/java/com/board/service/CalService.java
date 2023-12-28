@@ -69,10 +69,10 @@ public class CalService {
       return calmapper.calViewList(yyyyMM, ykiho);
    }
    
-   public boolean pay(String fintech_use_num, String remaining_balance) {
-	   Map<String, String> map = new HashMap<>();
+   public boolean pay(String fintech_use_num, int money) {
+	   Map<String, Object> map = new HashMap<>();
 	   map.put("fintech_use_num", fintech_use_num);
-	   map.put("remaining_balance", remaining_balance);
+	   map.put("remaining_balance", money);
 	   return calmapper.pay(map);
 	   
    }
