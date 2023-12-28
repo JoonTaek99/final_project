@@ -222,10 +222,10 @@ public class CalController {
    		return "cal/calBoardList";
    	}
        
-
+       @ResponseBody
        @GetMapping(value = "/pay")
        public void pay(String fintech_use_num, String remaining_balance) {
-    	   System.out.println("돈 깎아버리기");
+    	   System.out.println("결제하기");
     	   System.out.println(fintech_use_num + ", " + remaining_balance);
     	   
     	   calService.pay(fintech_use_num, remaining_balance);

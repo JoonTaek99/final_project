@@ -88,28 +88,6 @@ public class BankingController {
       return result;
    }
    
-   //Feign 적용할 경우
-   //나의정보조회
-//   @GetMapping("/myinfo_feign")
-//   public String myinfo_feign(HttpServletRequest request,
-//                            Model model) throws IOException, ParseException {
-//      System.out.println("나의정보조회[계좌목록]");
-//
-//      //사용자 일련 번호를 가져오기 위해 session객체 구함
-//      HttpSession session=request.getSession();
-//      UserDto ldto=(UserDto)session.getAttribute("ldto");
-//      int userSeqNo=ldto.getUserseqno();//사용자 일련번호
-//      String useraccesstoken=ldto.getUseraccesstoken();//접근할 토큰
-//      
-//      //json값들을 userMeDto에 저장
-//      UserMeDto userMeDto=openBankingFeign
-//            .requestUserMe("Bearer "+useraccesstoken, userSeqNo+"");
-//      //자바객체에 결과값을 저장했으므로 Model에 담아서 JSP로 전달할 수 있다.
-//      model.addAttribute("userMeDto", userMeDto);
-//      System.out.println("계좌목록수:"+userMeDto.getRes_list().size());
-//      return "main";
-//   }
-   
    @ResponseBody
    @GetMapping("/balance")
    public JSONObject balance(String fintech_use_num,HttpServletRequest request) throws IOException, ParseException {
@@ -151,7 +129,7 @@ public class BankingController {
    
    @ResponseBody
    @GetMapping("/insertaccount")
-   public JSONObject insertaccount(String fintech_use_num,HttpServletRequest request) throws IOException, ParseException {
+   public JSONObject insertaccount(String fintech_use_num, HttpServletRequest request) throws IOException, ParseException {
       System.out.println("계좌등록");
       HttpURLConnection conn=null;
       JSONObject result=null;
@@ -159,9 +137,9 @@ public class BankingController {
       HttpSession session=request.getSession();
       UserDto ldto=(UserDto)session.getAttribute("ldto");
       System.out.println(fintech_use_num);
+      int userseqno = ldto.getUserseqno();
       HttpSession session1=request.getSession();
       AccountDto adto=(AccountDto)session1.getAttribute("adto");
-      System.out.println(fintech_use_num);
       URL url=new URL("https://testapi.openbanking.or.kr/v2.0/account/balance/fin_num?"
                   + "bank_tran_id=M202201886U"+createNum()
                   + "&fintech_use_num="+fintech_use_num
@@ -186,7 +164,8 @@ public class BankingController {
       
       result=(JSONObject)new JSONParser().parse(response.toString());
       String money=result.get("balance_amt").toString();
-      userService.addAccount(money, fintech_use_num);
+      String bank_name=result.get("bank_name").toString();
+      userService.addAccount(money, fintech_use_num, bank_name, userseqno);
 
       return result;
    }

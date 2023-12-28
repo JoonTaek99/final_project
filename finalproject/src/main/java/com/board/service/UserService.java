@@ -52,10 +52,12 @@ public class UserService {
       return userMapper.userReserve(email);
    }
    
-   public boolean addAccount(String money, String fintech_use_num) {
-         Map<String, String>map=new HashMap<>();
+   public boolean addAccount(String money, String fintech_use_num, String bank_name, int userseqno) {
+         Map<String, Object>map=new HashMap<>();
          map.put("money", money);
          map.put("fintech_use_num", fintech_use_num);
+         map.put("bank_name", bank_name);
+         map.put("userseqno", userseqno);
          int count = userMapper.addAccount(map);
          return count>0?true:false;
       }

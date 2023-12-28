@@ -21,6 +21,6 @@ public interface UserMapper {
       
       public List<CalDto> userReserve(String email);
       
-      public int addAccount(Map<String, String>map);
+      public int addAccount(Map<String, Object>map);
       
 }

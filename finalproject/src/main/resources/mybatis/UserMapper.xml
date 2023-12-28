@@ -34,9 +34,9 @@
          WHERE EMAIL = #{email}
    </select>
    
-   <insert id="addAccount" parameterType="AccountDto">
-        INSERT INTO useraccount
-        VALUES(#{fintech_use_num}, #{money})
+   <insert id="addAccount" parameterType="Map">
+        INSERT INTO USERACCOUNT
+        VALUES(#{fintech_use_num}, #{money},#{bank_name},#{userseqno})
    </insert>
    
 </mapper>
