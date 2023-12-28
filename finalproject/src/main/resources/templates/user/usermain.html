@@ -27,35 +27,32 @@ onload=function myInfo(){
          //출력할 내용
          //계좌이름
          //핀테크이용번호 [은행이름]
-         for (var i = 0; i < res_list.length; i++) {
+         
             $("#list").append(
                '<div class="box container">'
                    +'   <div class="sub_menu"> '
-                   +'      <button onclick="balance(\''+res_list[i].fintech_use_num+'\',this)" class="balance" style="display: none;">잔액조회</button>'
+                   +'      <button onclick="totalmoney()" class="total" style="display: none;">잔액조회</button>'
                    +'   </div>'
                    +'   <div class="balance_amt"></div>'
                    +'</div>   '
             )
-         }
-            $(".balance").trigger('click');
-            $("#list").append("<p>잔액합계:"+a.toLocaleString('ko-KR')+"원</p>")
+         
+            $(".total").trigger('click');
+            
          
       }
    });
 }
 
 //잔액조회하기
-function balance(fintech_use_num,btnEle){
+function totalmoney(btnEle){
    $.ajax({
-      url:"/banking/balance",
+      url:"/banking/total",
       method:"get",
-      data:{"fintech_use_num":fintech_use_num},
       dataType:"json",
       async:false,
       success:function(data){
-         a = a + parseInt(data.balance_amt);
-         var box=$(btnEle).parents(".box").eq(0);
-
+         $("#list").append("<p>잔액합계:"+data.toLocaleString('ko-KR')+"원</p>")
       },
       error:function(){
          alert("통신실패");
@@ -75,14 +72,6 @@ function addAccount(){
          
    window.open(url,"인증하기","width=400px,height=600px");      
 }
-
-function showMoney(){
-	location.href = '';
-}
-
-
-
-
 </script>
 <style type="text/css">
  #list > p{
@@ -118,7 +107,6 @@ function showMoney(){
    </table>
    <div id="list" >
    </div>
-   <button id="money" onclick="showMoney()" ></button>
 </div>
 </body>
 </html>
