@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{layouts/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script type="text/javascript">
+        function updateEX() {
+            if (confirm("수정하시겠습니까?")) {
+                return true;
+            }
+            return false;
+        }
+
+        function addReply() {
+            var seq = parseInt($("input[name=board_seq]").val());
+            var email = $("input[id=replyId]").val();
+            var content = $("input[name=text]").val();
+            $("input[name=text]").val("");
+            $.ajax({
+                url: "/review/addReplyBoard",
+                method: "get",
+                dataType: "text",
+                async: false,
+                data: {"board_seq": seq, "email": email, "content": content},
+                success: function (data) {
+
+                },
+                error: function (e) {
+                    alert("통신오류" + e);
+                }
+            });
+        }
+
+        function showReply() {
+            var seq = parseInt($("input[name=board_seq]").val());
+            $.ajax({
+                url: "/review/showReplyBoard",
+                method: "get",
+                dataType: "json",
+                async: false,
+                data: {"seq": seq},
+                success: function (data) {
+                    var replyContainer = document.getElementById('reply');
+                    replyContainer.innerHTML = "";
+
+                    for (var i = 0; i < data.list.length; i++) {
+                        const addValue = data.list[i].email + " | " + data.list[i].content;
+                        const li = document.createElement("li");
+                        li.textContent = addValue;
+                        li.classList.add("comment");
+                        replyContainer.appendChild(li);
+
+                        // Hide additional comments initially
+                        if (i >= 5) {
+                            li.classList.add("hidden");
+                        }
+                    }
+                },
+                error: function (e) {
+                    alert("댓글보기 오류" + e);
+                }
+            });
+
+            // Attach a scroll event listener to show more comments
+            var replyContainer = document.getElementById('reply');
+            replyContainer.addEventListener('scroll', function () {
+                showMoreComments();
+            });
+        }
+
+        function showMoreComments() {
+            var replyContainer = document.getElementById('reply');
+            var hiddenComments = replyContainer.querySelectorAll('.hidden');
+
+            hiddenComments.forEach(function (comment, index) {
+                // Display additional comments when scrolled
+                if (comment.getBoundingClientRect().top < window.innerHeight) {
+                    comment.classList.remove('hidden');
+                }
+            });
+        }
+    </script>
+    <style type="text/css">
+        li {
+            list-style: none;
+        }
+
+        #reply {
+            list-style: none;
+            padding: 0;
+            overflow-y: auto;
+            max-height: 200px; /* Adjust as needed */
+        }
+
+        #reply li {
+            border: 1px solid #ccc;
+            margin-bottom: 10px; /* Adjust spacing as needed */
+            padding: 10px;
+            display: inline-block;
+            width: calc(20% - 20px); /* Adjust the width and margin as needed */
+            margin-right: 10px;
+        }
+
+        #reply li:last-child {
+            border-bottom: none;
+        }
+
+        #reply .comment-content {
+            font-size: 14px;
+            color: #333;
+        }
+
+        #reply .comment-author {
+            font-weight: bold;
+            color: #0066cc;
+            margin-right: 10px;
+        }
+
+        #reply .comment-date {
+            color: #888;
+        }
+
+        #replyId {
+            width: 150px; /* Adjust the width as needed */
+        }
+
+        #exampleFormControlTextarea1 {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        #add, #show {
+            margin-top: 10px;
+        }
+
+        .card {
+            margin-top: 20px;
+        }
+
+        .comment-actions {
+            margin-top: 10px;
+        }
+
+        #add, #show {
+            margin-right: 10px; /* Adjust as needed */
+            margin-bottom: 7px; /* Add this line to control the vertical spacing */
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div id="container">
+        <h1>상세보기</h1>
+        <form action="/review/reviewUpdate" method="post" onsubmit="return updateEX()" th:object="${updateReviewCommand}">
+            <input type="hidden" name="board_seq" th:value="${dto.board_seq}" />
+            <table class="table">
+                <tr>
+         <th>작성자[EMAIL]</th>
+         <td th:text="${dto.email}"></td>
+      </tr>
+      <tr>
+         <th>병원명</th>
+         <td>
+            <input type="text" name="hos_name" th:value="${dto.hos_name}" class="form-control" />            
+         </td>
+      </tr>
+      <tr>
+         <th>제목</th>
+         <td>
+            <input type="text" name="title" th:value="${dto.title}" class="form-control" />
+            <span th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></span>
+         </td>
+      </tr>
+      <tr>
+         <th>내용</th>
+         <td>
+            <th:block th:if="${session.ldto.email==dto.email}">
+            <textarea rows="10" cols="60" name="content" th:text="${dto.content}" class="form-control">   </textarea>
+              <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+         </th:block>
+         <th:block th:unless="${session.ldto.email==dto.email}">
+            <textarea rows="10" cols="60" name="content" th:text="${dto.content}" class="form-control">   </textarea>
+             <span th:if="${#fields.hasErrors('content')}" th:errors="*{content}"></span>
+         </th:block>
+            
+         </td>
+      </tr>
+      <tr>
+         <td colspan="2">
+            <th:block th:if="${dto.email==session.ldto.email}">
+               <button type="submit" class="btn">수정</button>
+            </th:block>
+            <th:block th:unless="${dto.email==session.ldto.email}">
+               <button type="submit" class="btn" style="display: none;">수정</button>
+            </th:block>
+               <button type="button" class="btn" th:onclick="|location.href='@{/review/reviewList}'|">목록</button>
+            <th:block th:if="${dto.email==session.ldto.email}">
+               <button type="button" title="삭제" class="btn" th:onclick="|location.href='@{/review/mulDel(seq=${dto.board_seq})}'|"> <span class="glyphicon glyphicon-trash" ></span></button>
+            </th:block>
+            <th:block th:unless="${dto.email==session.ldto.email}">
+               <button type="button" title="삭제" class="btn"  th:onclick="|location.href='@{/review/mulDel(seq=${dto.board_seq})}'|"  style="display: none;"><span class="glyphicon glyphicon-trash" ></span></button>
+            </th:block>   
+               
+               
+         </td>
+      </tr>
+            </table>
+            <div class="card mb-2">
+                <div class="card-header bg-light">
+                    <i class="fa fa-comment fa"></i> REPLY
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="form-inline mb-2">
+                                <label for="replyId"><i class="fa fa-user-circle-o fa-2x"></i></label>
+                                <input type="text" class="form-control ml-2" id="replyId" th:value="${session.ldto.email}" readonly>
+                            </div>
+                            <input type="text" class="form-control" id="exampleFormControlTextarea1" name="text">
+                            <button id="add" type="button" class="btn btn-dark mt-3" onclick="addReply()">댓글 달기</button>
+                            <button type="button" class="btn btn-dark mt-3" onclick="showReply()">댓글 보기</button>
+                            <ul id='reply'></ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

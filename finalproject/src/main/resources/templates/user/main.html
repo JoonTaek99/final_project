@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{layouts/layout}">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <script type="text/javascript">
+
+    </script>
+    <style type="text/css">
+        #list > p {
+            float: right;
+            font-size: 50px;
+        }
+
+        body {
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin: 0; 
+            height: 100vh;
+        }
+        .brand {
+       		top:35%;
+        	left: 30%;
+        }
+    </style>
+</head>
+<body>
+
+<div layout:fragment="content">
+<img class="book" th:src="@{/css/Firefly 펼쳐진 가계부 46533.jpg}" style="width:100%" />
+</div>
+</body>
+</html>
