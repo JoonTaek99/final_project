@@ -177,6 +177,7 @@ public class UserController {
 	   String email = ((UserDto) session.getAttribute("ldto")).getEmail();
 			   
        List<CalDto> list = userService.userReserve(email);
+       System.out.println(list);
        model.addAttribute("list", list);
 	   
 	   return "user/usermain";

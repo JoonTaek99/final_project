@@ -15,6 +15,7 @@ public class CalDto {
    private Date regdate;
    private String ykiho;
    private String yadmNm;
+   private int useMoney;
    
    public CalDto() {
 	      super();
@@ -22,7 +23,7 @@ public class CalDto {
 	   }
 
 public CalDto(int seq, String email, String title, String content, String mdate, Date regdate, String ykiho,
-		String yadmNm) {
+		String yadmNm, int useMoney) {
 	super();
 	this.seq = seq;
 	this.email = email;
@@ -32,12 +33,13 @@ public CalDto(int seq, String email, String title, String content, String mdate,
 	this.regdate = regdate;
 	this.ykiho = ykiho;
 	this.yadmNm = yadmNm;
+	this.useMoney = useMoney;
 }
 
 @Override
 public String toString() {
 	return "CalDto [seq=" + seq + ", email=" + email + ", title=" + title + ", content=" + content + ", mdate=" + mdate
-			+ ", regdate=" + regdate + ", ykiho=" + ykiho + ", yadmNm=" + yadmNm + "]";
+			+ ", regdate=" + regdate + ", ykiho=" + ykiho + ", yadmNm=" + yadmNm + ", useMoney=" + useMoney + "]";
 }
 
 public int getSeq() {
@@ -103,8 +105,15 @@ public String getYadmNm() {
 public void setYadmNm(String yadmNm) {
 	this.yadmNm = yadmNm;
 }
-   
-   
+
+public int getUseMoney() {
+	return useMoney;
+}
+
+public void setUseMoney(int useMoney) {
+	this.useMoney = useMoney;
+}
+
 
 
    

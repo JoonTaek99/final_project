@@ -160,14 +160,14 @@ public class CalController {
        
        @PostMapping(value = "/addCalBoard")
        public String addCalBoard(@Validated InsertCalCommand insertCalCommand,
-                           BindingResult result, String ykiho, String yadmNm) throws Exception {
+                           BindingResult result, String ykiho, String yadmNm, int useMoney) throws Exception {
           System.out.println("일정추가하기");
           System.out.println(insertCalCommand);
           if(result.hasErrors()) {
              System.out.println("글을 모두 입력해야 함");
              return "cal/addCalBoardForm";
           }
-          calService.insertCalBoard(insertCalCommand, ykiho, yadmNm);
+          calService.insertCalBoard(insertCalCommand, ykiho, yadmNm, useMoney);
           System.out.println("성공");
           return "redirect:/cal/calendar?ykiho=" + ykiho;
        }
@@ -224,13 +224,14 @@ public class CalController {
        
        @ResponseBody
        @GetMapping(value = "/pay")
-       public void pay(String fintech_use_num, String remaining_balance) {
+       public boolean pay(String fintech_use_num, String remaining_balance) {
     	   System.out.println("결제하기");
     	   int money = Integer.parseInt(remaining_balance);
     	   System.out.println(fintech_use_num + ", " + money);
     	   
-    	   calService.pay(fintech_use_num, money);
+    	   boolean isS = calService.pay(fintech_use_num, money);
     	   
+    	   return isS;
        }
        
 

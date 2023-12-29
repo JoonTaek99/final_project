@@ -29,7 +29,7 @@
    </update>
    
    <select id="userReserve" parameterType="String" resultType="CalDto">
-         SELECT YADMNM, MDATE
+         SELECT YADMNM, MDATE, usemoney
          FROM RESERVEBOARD
          WHERE EMAIL = #{email}
    </select>

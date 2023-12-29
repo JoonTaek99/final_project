@@ -78,7 +78,7 @@ public class CalService {
    }
    
    
-   public boolean insertCalBoard(InsertCalCommand insertCalCommand, String ykiho, String yadmNm) throws Exception {
+   public boolean insertCalBoard(InsertCalCommand insertCalCommand, String ykiho, String yadmNm, int useMoney) throws Exception {
       // command --> dto로  값을 이동
       // DB에서는 mdate 컬럼 , command에서는 year, month... : 12자리로 변환작업
       String mdate=insertCalCommand.getYear()
@@ -96,6 +96,7 @@ public class CalService {
       dto.setEmail(insertCalCommand.getEmail());
       dto.setYkiho(ykiho);
       dto.setYadmNm(yadmNm);
+      dto.setUseMoney(useMoney);
       
       int count=calmapper.insertCalBoard(dto);
       

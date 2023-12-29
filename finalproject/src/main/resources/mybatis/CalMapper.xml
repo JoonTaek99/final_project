@@ -4,7 +4,7 @@
 <mapper namespace="com.board.mapper.CalMapper">
    <insert id="insertCalBoard" parameterType="CalDto">
       INSERT INTO reserveboard
-        VALUES (NULL,#{email},#{title},#{content},#{mdate},SYSDATE(),#{ykiho},'N',#{yadmNm})
+        VALUES (NULL,#{email},#{title},#{content},#{mdate},SYSDATE(),#{ykiho},'N',#{yadmNm},#{useMoney})
    </insert>
    
    <select id="calBoardList" parameterType="Map" resultType="CalDto">

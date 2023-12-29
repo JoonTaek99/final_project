@@ -7,130 +7,80 @@
 <title>Insert title here</title>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script type="text/javascript">
-
-$("#usage").val(20000);
-
 onload = function myInfo() {
-    // Function to calculate and update the remaining balance
     function updateRemainingBalance() {
         var currentBalance = parseFloat($("#currentBalance").val());
         var usageAmount = parseFloat($("#usage").val());
-
-        // Check if both values are valid numbers
         if (!isNaN(currentBalance) && !isNaN(usageAmount)) {
             var remainingBalance = Math.floor(currentBalance - usageAmount);
             $("#remainingBalance").val(remainingBalance);
         }
     }
-
     $.ajax({
         url: "/banking/getMyAccount",
         method: "get",
         dataType: "json",
         success: function (data) {
             var accountDropdown = $("#accountDropdown");
-
             accountDropdown.empty();
-
             $.each(data, function(index, account) {
                 var option = $("<option>");
-
                 option.val(account.money); // Set fintech_use_num as the value
                 option.text(account.fintech_use_num + ' [' + account.bank_name + ']');
-
                 accountDropdown.append(option);
             });
-
-            // Add change event listener to the accountDropdown
             accountDropdown.change(function() {
-                // Get the selected value
                 var selectedValue = $(this).val();
 
-                // Update the #currentBalance input with the selected value
                 $("#currentBalance").val(selectedValue);
-
-                // Update the #finusenum input with the fintech_use_num
                 $("#finusenum").val(accountDropdown.find(":selected").text().split('[')[0].trim());
 
-                // Update the remaining balance
                 updateRemainingBalance();
             });
-
-            // Set the value of the input with id 'usage' to 20000
-            $("#usage").val(20000);
-
-            // Show the moneyDiv immediately
             $("#moneyDiv").show();
         }
     });
 }
 
-
-// Function to handle changes in the usage input
 $("#usage").on("input", function() {
-    // Update the remaining balance whenever the usage input changes
     updateRemainingBalance();
 });
-
-
-
-
-
-
-function insertaccount() {
-    var selectedValue = $("#accountDropdown").val();
-    $.ajax({
-        url: "/banking/insertaccount",
-        method: "get",
-        data: { "fintech_use_num": selectedValue },
-        dataType: "json",
-        success: function (data) {
-            alert("등록이 완료되었습니다.");
-
-            updatePaymentSelect(selectedValue);
-
-            document.getElementById("usage").value = "20000";
-
-            document.getElementById("currentBalance").value = data.balance_amt;
-
-            var remainingBalance = data.balance_amt - 20000;
-            document.getElementById("remainingBalance").value = remainingBalance;
-
-            // Update the #finusenum input with the fintech_use_num
-            $("#finusenum").val($("#accountDropdown option:selected").text().split('[')[0].trim());
-
-            $("#moneyDiv").show();
-        },
-        error: function () {
-            alert("등록에 실패했습니다.");
-        }
-    });
-}
-
 
 function payInfo() {
     var selectedfinusenum = $("#finusenum").val();
     var remainingBalance = $("#remainingBalance").val();
+    var usage = $("#usage").val();
 
     $.ajax({
         url: "/cal/pay",
         method: "get",
         data: {"fintech_use_num": selectedfinusenum, "remaining_balance": remainingBalance},
         dataType: "json",
-        // success: function (data) {
-        //     alert("결제가 완료되었습니다.");
-        // },
-        // error: function () {
-        //     alert("결제에 실패했습니다.");
-        // }
+        success: function (isPaymentSuccessful) {
+            if (isPaymentSuccessful) {
+                alert("결제가 완료되었습니다.");
+
+                if (window.opener) {
+                    window.opener.updatePaymentButtonValue(usage);
+                }
+                window.close();
+            } else {
+                alert("결제에 실패했습니다.");
+            }
+        },
+        error: function () {
+            alert("서버 오류 또는 네트워크 오류로 결제에 실패했습니다.");
+        }
     });
 }
+
     
 function updatePaymentSelect(selectedValue) {
     $("#paymentDropdown").append(
         '<option value="' + selectedValue + '">' + $("#accountDropdown option:selected").text() + '</option>'
     );
 }
+
 </script>
 <style type="text/css">
     .select-container {
@@ -184,8 +134,7 @@ function updatePaymentSelect(selectedValue) {
         <input id="usage"><br/>
         <p style="display: inline-block;">남은잔액</p>
         <input id="remainingBalance" readonly>
-        <p style="display: inline-block;">fintech_use_num</p>
-        <input id="finusenum" readonly>
+        <input id="finusenum" readonly type="hidden">
     </div>
 
     <div class="select-container">

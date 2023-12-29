@@ -17,6 +17,12 @@ function backCalendar() {
     var yadmNmValue = document.getElementsByName("yadmNm")[0].value;
     location.href = '/cal/calendar?ykiho=' + ykihoValue + '&yadmNm=' + yadmNmValue;
 }
+
+function updatePaymentButtonValue(usage) {
+    $("#paymentButton").val("결제완료");
+
+    $("#usage").val(usage);
+}
 </script>
 </head>
 <body>
@@ -25,6 +31,7 @@ function backCalendar() {
    <h1>일정 추가하기</h1>
    <form th:action="@{/cal/addCalBoard}" method="post" th:object="${insertCalCommand}">
       <input type="hidden" name="ykiho" th:value="${ykiho}"/>
+      <input type="hidden" name="useMoney" id="usage"/>
       <table class="table">
          <tr>
             <th>일정</th>
@@ -91,6 +98,8 @@ function backCalendar() {
                <input type="email" name="email" th:value="${session.ldto.email}"/>
             </td>
          </tr>
+         
+
          <tr>
             <th>내용</th>
             <td>
@@ -101,7 +110,7 @@ function backCalendar() {
          </tr>
          <tr>
             <td colspan="2">
-                <input type="button" value="결제"
+                <input type="button" value="결제" id="paymentButton"
                                th:onclick="redirectToPayForm()"/>
                <input type="submit" value="예약" />
                <input type="button" value="이전" th:onclick="backCalendar()"/>

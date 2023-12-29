@@ -101,7 +101,7 @@ function addAccount(){
          <tr th:each="dto:${list}">
             <td th:text="${dto.yadmNm}"></td>
             <td th:text="${dto.mdate}"></td>
-            <td th:text="0원"></td>
+            <td th:text="${dto.useMoney}"></td>
          </tr>
       </th:block>
    </table>

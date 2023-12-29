@@ -22,6 +22,7 @@
    </where> 
       ORDER BY BOARD_SEQ DESC
    </select>
+   
    <insert id="insertReview" parameterType="reviewDto"
       useGeneratedKeys="true" keyProperty="board_seq">
       INSERT INTO BOARD
@@ -49,6 +50,22 @@
       FROM BOARD
       WHERE DELFLAG = "N"
    </select>
+   
+      <update id="updateBoard" parameterType="reviewDto">
+    UPDATE BOARD
+    SET TITLE = #{title}, CONTENT = #{content}
+    WHERE BOARD_SEQ = #{board_seq}
+   </update>
+   
+   
+   <update id="mulDel" parameterType="Map">
+      UPDATE BOARD SET DELFLAG = 'Y' WHERE BOARD_SEQ IN
+      <foreach collection="seqs" item="board_seq" open="(" close=")"
+               separator=",">
+         #{board_seq}
+      </foreach>
+   </update>
+   
 </mapper>
 
 
