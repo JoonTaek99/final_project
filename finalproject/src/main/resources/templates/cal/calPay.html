@@ -8,6 +8,7 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script type="text/javascript">
 onload = function myInfo() {
+	alert("사용금액을 먼저 입력해주세요");
     function updateRemainingBalance() {
         var currentBalance = parseFloat($("#currentBalance").val());
         var usageAmount = parseFloat($("#usage").val());
@@ -25,8 +26,8 @@ onload = function myInfo() {
             accountDropdown.empty();
             $.each(data, function(index, account) {
                 var option = $("<option>");
-                option.val(account.money); // Set fintech_use_num as the value
-                option.text(account.fintech_use_num + ' [' + account.bank_name + ']');
+                option.val(account.money);
+                option.text(account.account_num_masked + ' [' + account.bank_name + ']');
                 accountDropdown.append(option);
             });
             accountDropdown.change(function() {
@@ -131,7 +132,7 @@ function updatePaymentSelect(selectedValue) {
         <p style="display: inline-block;">현재잔액</p>
         <input id="currentBalance" readonly><br/>
         <p style="display: inline-block;">사용금액</p>
-        <input id="usage"><br/>
+        <input id="usage" placeholder="먼저 사용금액을 입력해주세요"><br/>
         <p style="display: inline-block;">남은잔액</p>
         <input id="remainingBalance" readonly>
         <input id="finusenum" readonly type="hidden">

@@ -7,7 +7,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -129,14 +131,14 @@ public class BankingController {
    
    @ResponseBody
    @GetMapping("/insertaccount")
-   public JSONObject insertaccount(String fintech_use_num, HttpServletRequest request) throws IOException, ParseException {
+   public JSONObject insertaccount(String fintech_use_num, String account_num_masked, HttpServletRequest request) throws IOException, ParseException {
       System.out.println("계좌등록");
       HttpURLConnection conn=null;
       JSONObject result=null;
 
       HttpSession session=request.getSession();
       UserDto ldto=(UserDto)session.getAttribute("ldto");
-      System.out.println(fintech_use_num);
+      System.out.println(account_num_masked);
       int userseqno = ldto.getUserseqno();
       HttpSession session1=request.getSession();
       AccountDto adto=(AccountDto)session1.getAttribute("adto");
@@ -165,7 +167,7 @@ public class BankingController {
       result=(JSONObject)new JSONParser().parse(response.toString());
       String money=result.get("balance_amt").toString();
       String bank_name=result.get("bank_name").toString();
-      userService.addAccount(money, fintech_use_num, bank_name, userseqno);
+      userService.addAccount(money, fintech_use_num, bank_name, userseqno, account_num_masked);
 
       return result;
    }
@@ -257,6 +259,21 @@ public class BankingController {
       return totalMoney;
    }
 
+   
+   @ResponseBody
+   @GetMapping(value = "/CheckAccount")
+   public Map<String, String> idChk(String fintech_use_num){
+      System.out.println("계좌중복체크");
+      
+      String resultAccount = userService.CheckAccount(fintech_use_num);
+      
+      // json 객체로 보내기 위해 Map에 담아서 응답
+      // text라면 그냥 String 으로 보내도 됨
+      Map<String, String> map = new HashMap<>();
+      map.put("fintech_use_num", resultAccount);
+      
+      return map;
+   }
    
    
    

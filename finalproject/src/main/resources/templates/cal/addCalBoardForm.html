@@ -6,6 +6,7 @@
 <meta charset="UTF-8">
 <title></title>
 <style type="text/css">
+
 </style>
 <script type="text/javascript">
 function redirectToPayForm() {
@@ -20,6 +21,8 @@ function backCalendar() {
 
 function updatePaymentButtonValue(usage) {
     $("#paymentButton").val("결제완료");
+    $("#paymentButton").prop("disabled", true);
+    $("#reserveButton").prop("disabled", false);
 
     $("#usage").val(usage);
 }
@@ -112,7 +115,7 @@ function updatePaymentButtonValue(usage) {
             <td colspan="2">
                 <input type="button" value="결제" id="paymentButton"
                                th:onclick="redirectToPayForm()"/>
-               <input type="submit" value="예약" />
+               <input type="submit" value="예약" id="reserveButton"  disabled="disabled"/>
                <input type="button" value="이전" th:onclick="backCalendar()"/>
             </td>
          </tr>

@@ -12,6 +12,7 @@ import com.board.mapper.CalMapper;
 import com.board.utils.Util;
 import com.board.command.InsertCalCommand;
 import com.board.dtos.CalDto;
+import com.board.dtos.ReviewDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -70,11 +71,11 @@ public class CalService {
    }
    
    public boolean pay(String fintech_use_num, int money) {
-	   Map<String, Object> map = new HashMap<>();
-	   map.put("fintech_use_num", fintech_use_num);
-	   map.put("remaining_balance", money);
-	   return calmapper.pay(map);
-	   
+      Map<String, Object> map = new HashMap<>();
+      map.put("fintech_use_num", fintech_use_num);
+      map.put("remaining_balance", money);
+      return calmapper.pay(map);
+      
    }
    
    
@@ -103,13 +104,18 @@ public class CalService {
       return count>0?true:false;
    }
    
-//   public List<CalDto> calBoardList(String id,String yyyyMMdd) {
-//      return calmapper.calBoardList(id,yyyyMMdd);
-//   }
-//   
-   public int calBoardCount(String yyyyMMdd) {
-      return calmapper.calBoardCount(yyyyMMdd);
+   public List<CalDto> calBoardList(String ykiho,String yyyyMMdd) {
+      return calmapper.calBoardList(ykiho,yyyyMMdd);
    }
+//   
+   public int calBoardCount(String yyyyMMdd,String ykiho) {
+	      return calmapper.calBoardCount(yyyyMMdd,ykiho);
+	   }
+   
+   
+   public CalDto getBoard(int seq) {
+       return calmapper.getBoard(seq);
+    }
 //
 //   public boolean calMulDel(Map<String, String[]> map) {
 //      return calmapper.calMulDel(map);
@@ -137,24 +143,22 @@ public class CalService {
 //   }
 //   
 //   public boolean insertCalReply(InsertCalReplyCommand insertCalCommand) throws Exception {
-//	     
-//	      CalDto dto=new CalDto();
-//	      dto.setSeq(insertCalCommand.getSeq());
-//	      dto.setId(insertCalCommand.getId());
-//	      dto.setContent(insertCalCommand.getContent());
-//	      
-//	      int count=calReplyMapper.insertCalReplyBoard(dto);
-//	     
-//	      return count>0?true:false;
-//	   }
+//        
+//         CalDto dto=new CalDto();
+//         dto.setSeq(insertCalCommand.getSeq());
+//         dto.setId(insertCalCommand.getId());
+//         dto.setContent(insertCalCommand.getContent());
+//         
+//         int count=calReplyMapper.insertCalReplyBoard(dto);
+//        
+//         return count>0?true:false;
+//      }
 //   
 //   
 //   public List<CalDto> showCalReply(int seq) throws Exception{    
 //       return calReplyMapper.getCalReplyBoard(seq);
 //   }
 }
-
-
 
 
 

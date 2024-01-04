@@ -42,7 +42,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.board.command.InsertCalCommand;
+import com.board.command.UpdateReviewCommand;
 import com.board.dtos.CalDto;
+import com.board.dtos.ReviewDto;
 import com.board.dtos.UserDto;
 import com.board.service.CalService;
 import com.board.utils.Util;
@@ -154,8 +156,8 @@ public class CalController {
        
        @GetMapping(value = "payForm")
        public String payForm() {
-    	   System.out.println("결제 폼 이동");
-    	   return "cal/calPay";
+          System.out.println("결제 폼 이동");
+          return "cal/calPay";
        }
        
        @PostMapping(value = "/addCalBoard")
@@ -171,7 +173,32 @@ public class CalController {
           System.out.println("성공");
           return "redirect:/cal/calendar?ykiho=" + ykiho;
        }
-       
+       @GetMapping(value = "/calBoardList")
+       public String calBoardList(@RequestParam Map<String, String>map
+                         , HttpServletRequest request
+                         , Model model, String ykiho) {
+
+
+          HttpSession session=request.getSession();
+          
+          System.out.println(ykiho);
+          if(map.get("year")==null) {
+             //조회한 상태이기때문에 ymd가 저장되어 있어서 값을 가져옴
+             map=(Map<String, String>)session.getAttribute("ymdMap");
+          }else {
+             //일정을 처음 조회했을때 ymd를 저장함
+             session.setAttribute("ymdMap", map);
+          }
+          
+          //달력에서 전달받은 파라미터 year, month, date를 8자리로 만든다.
+          String yyyyMMdd=map.get("year")
+                       +Util.isTwo(map.get("month"))
+                       +Util.isTwo(map.get("date"));
+          List<CalDto> list= calService.calBoardList(ykiho,yyyyMMdd);
+          model.addAttribute("list", list);
+          
+          return "cal/calBoardList";
+       }
        
        @PostMapping("/payinfo")
        public ResponseEntity<String> payInfo(@RequestBody JSONObject requestData) throws IOException {
@@ -215,48 +242,51 @@ public class CalController {
            }
        }
        
-       @GetMapping(value = "/calBoardList")
-       public String calBoardList() {
-   		System.out.println("일정목록보기");
-   		
-   		return "cal/calBoardList";
-   	}
+       @GetMapping(value = "/calBoardDetail")
+       public String calBoardDetail(int seq, Model model) {
+          CalDto dto = calService.getBoard(seq);
+          model.addAttribute("dto",dto);
+
+          return "cal/calBoardDetail";
+       }
+       
+
        
        @ResponseBody
        @GetMapping(value = "/pay")
        public boolean pay(String fintech_use_num, String remaining_balance) {
-    	   System.out.println("결제하기");
-    	   int money = Integer.parseInt(remaining_balance);
-    	   System.out.println(fintech_use_num + ", " + money);
-    	   
-    	   boolean isS = calService.pay(fintech_use_num, money);
-    	   
-    	   return isS;
+          System.out.println("결제하기");
+          int money = Integer.parseInt(remaining_balance);
+          System.out.println(fintech_use_num + ", " + money);
+          
+          boolean isS = calService.pay(fintech_use_num, money);
+          
+          return isS;
        }
        
 
        @ResponseBody
        @GetMapping(value="/calCountAjax")
-       public Map<String,Integer> calCountAjax(String yyyyMMdd){
+       public Map<String,Integer> calCountAjax(String yyyyMMdd, String ykiho){
 
           Map<String, Integer>map=new HashMap<>();
-          int count=calService.calBoardCount(yyyyMMdd);
+          int count=calService.calBoardCount(yyyyMMdd,ykiho);
           map.put("count", count);
           return map;
        }
-   	//이용기관 부여번호 9자리를 생성하는 메서드
-   	public String createNum() {
-   		String createNum="";
-   		for (int i = 0; i < 9; i++) {
-   			createNum+=((int)(Math.random()*10))+"";
-   		}
-   		System.out.println("이용기관부여번호9자리생성:"+createNum);
-   		return createNum;
-   	}
-   	//현재시간 구하는 메서드
-   	public String getDateTime() {
-   		LocalDateTime now=LocalDateTime.now(); //현재시간 구하기
-   		String formatNow=now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-   		return formatNow;
-   	}
+      //이용기관 부여번호 9자리를 생성하는 메서드
+      public String createNum() {
+         String createNum="";
+         for (int i = 0; i < 9; i++) {
+            createNum+=((int)(Math.random()*10))+"";
+         }
+         System.out.println("이용기관부여번호9자리생성:"+createNum);
+         return createNum;
+      }
+      //현재시간 구하는 메서드
+      public String getDateTime() {
+         LocalDateTime now=LocalDateTime.now(); //현재시간 구하기
+         String formatNow=now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+         return formatNow;
+      }
 }

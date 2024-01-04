@@ -6,24 +6,26 @@ public class AccountDto {
    private String fintech_use_num;
    private String bank_name;
    private int userseqno; 
+   private String account_num_masked;
    
    public AccountDto() {
       super();
       // TODO Auto-generated constructor stub
    }
 
-public AccountDto(int money, String fintech_use_num, String bank_name, int userseqno) {
+public AccountDto(int money, String fintech_use_num, String bank_name, int userseqno, String account_num_masked) {
 	super();
 	this.money = money;
 	this.fintech_use_num = fintech_use_num;
 	this.bank_name = bank_name;
 	this.userseqno = userseqno;
+	this.account_num_masked = account_num_masked;
 }
 
 @Override
 public String toString() {
 	return "AccountDto [money=" + money + ", fintech_use_num=" + fintech_use_num + ", bank_name=" + bank_name
-			+ ", userseqno=" + userseqno + "]";
+			+ ", userseqno=" + userseqno + ", account_num_masked=" + account_num_masked + "]";
 }
 
 public int getMoney() {
@@ -57,7 +59,16 @@ public int getUserseqno() {
 public void setUserseqno(int userseqno) {
 	this.userseqno = userseqno;
 }
-   
+
+public String getAccount_num_masked() {
+	return account_num_masked;
+}
+
+public void setAccount_num_masked(String account_num_masked) {
+	this.account_num_masked = account_num_masked;
+}
+
+
    
    
 }

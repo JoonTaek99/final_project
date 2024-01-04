@@ -8,9 +8,9 @@
    </insert>
    
    <select id="calBoardList" parameterType="Map" resultType="CalDto">
-       SELECT seq, title, content, mdate,regdate
+       SELECT seq,ykiho, content, mdate,regdate,title
       FROM reserveboard
-      WHERE SUBSTRING(mdate,1,8) = #{yyyyMMdd}
+      WHERE SUBSTRING(mdate,1,8) = #{yyyyMMdd} AND YKIHO= #{ykiho}
 
    </select>
    
@@ -37,20 +37,20 @@
    </delete>
    
    <select id="calViewList" parameterType="Map" resultType="CalDto">
-	   SELECT rn, seq, email,title,content, ykiho,mdate, regdate   
-	   from   (SELECT ROW_NUMBER() over(PARTITION BY SUBSTR(mdate,1,8)
-	                                   ORDER BY mdate) rn
-	             , seq, email,title,content, ykiho,mdate, regdate
-	          FROM reserveboard
-	          WHERE ykiho = #{ykiho} AND SUBSTR(mdate,1,6)=#{yyyyMM} 
-	          ) cal
-	   WHERE rn BETWEEN 1 AND 3
+      SELECT rn, seq, email,title,content, ykiho,mdate, regdate   
+      from   (SELECT ROW_NUMBER() over(PARTITION BY SUBSTR(mdate,1,8)
+                                      ORDER BY mdate) rn
+                , seq, email,title,content, ykiho,mdate, regdate
+             FROM reserveboard
+             WHERE ykiho = #{ykiho} AND SUBSTR(mdate,1,6)=#{yyyyMM} 
+             ) cal
+      WHERE rn BETWEEN 1 AND 3
    </select>
    
-   <select id="calBoardCount" parameterType="Map"
+     <select id="calBoardCount" parameterType="Map"
          resultType="Integer">
       SELECT COUNT(*) FROM reserveboard
-      WHERE SUBSTR(mdate,1,8)=#{yyyyMMdd}
+      WHERE SUBSTR(mdate,1,8)=#{yyyyMMdd} AND ykiho = #{ykiho}
    </select>
 
    <update id="pay" parameterType="Map">
@@ -59,10 +59,13 @@
       WHERE FINTECH_USE_NUM=#{fintech_use_num}
    </update>
    
+   <select id="getBoard" parameterType="Integer" resultType="CalDto">
+      SELECT SEQ, EMAIL,TITLE, CONTENT, REGDATE
+      FROM RESERVEBOARD 
+      WHERE SEQ = #{seq}
+   </select>
    
 </mapper>
-
-
 
 
 

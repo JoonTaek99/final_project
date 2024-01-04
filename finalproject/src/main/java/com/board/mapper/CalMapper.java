@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.board.dtos.CalDto;
+import com.board.dtos.ReviewDto;
 
 import groovy.transform.Undefined.EXCEPTION;
 
@@ -15,7 +16,7 @@ public interface CalMapper {
    //일정 추가
    public int insertCalBoard(CalDto dto) throws Exception;
    //일정 목록
-   public List<CalDto> calBoardList(String id,String yyyyMMdd);
+   public List<CalDto> calBoardList(String ykiho,String yyyyMMdd);
    //일정 상세조회
    public CalDto calBoardDetail(int seq);
    //일정 수정하기
@@ -25,8 +26,10 @@ public interface CalMapper {
    //한달의 일정보여주기
    public List<CalDto> calViewList(String yyyyMM, String ykiho);
    //일일의 일정개수 보여주기
-   public int calBoardCount(String yyyyMMdd);
+   public int calBoardCount(String yyyyMMdd, String ykiho);
    
    public boolean pay(Map<String, Object>map);
+   
+   public CalDto getBoard(int seq);
    
 }
