@@ -6,11 +6,42 @@
 <meta charset="UTF-8">
 <title></title>
 <style type="text/css">
-
+   #paymentButton{
+       padding: 10px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+   }
+   
+   #reserveButton{
+       padding: 10px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+   }
+   #prev{
+       padding: 10px;
+        background-color: #3498db;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;   
+   }
+   #paymentButton, #reserveButton, #prev {
+    float: right;
+    margin-left: 10px; /* Adjust the margin as needed */
+}
 </style>
 <script type="text/javascript">
 function redirectToPayForm() {
-	window.open('/cal/payForm', '_blank', 'width=517,height=500');
+   window.open('/cal/payForm', '_blank', 'width=517,height=500');
 }
 
 function backCalendar() {
@@ -113,10 +144,9 @@ function updatePaymentButtonValue(usage) {
          </tr>
          <tr>
             <td colspan="2">
-                <input type="button" value="결제" id="paymentButton"
-                               th:onclick="redirectToPayForm()"/>
+               <input type="button" value="결제" id="paymentButton" th:onclick="redirectToPayForm()"/>
                <input type="submit" value="예약" id="reserveButton"  disabled="disabled"/>
-               <input type="button" value="이전" th:onclick="backCalendar()"/>
+               <input type="button" value="이전" id="prev" th:onclick="backCalendar()"/>
             </td>
          </tr>
       </table>

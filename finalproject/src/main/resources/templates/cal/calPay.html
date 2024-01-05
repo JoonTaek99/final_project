@@ -7,16 +7,26 @@
 <title>Insert title here</title>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script type="text/javascript">
-onload = function myInfo() {
-	alert("사용금액을 먼저 입력해주세요");
-    function updateRemainingBalance() {
-        var currentBalance = parseFloat($("#currentBalance").val());
-        var usageAmount = parseFloat($("#usage").val());
-        if (!isNaN(currentBalance) && !isNaN(usageAmount)) {
-            var remainingBalance = Math.floor(currentBalance - usageAmount);
-            $("#remainingBalance").val(remainingBalance);
-        }
+
+function updateRemainingBalance() {
+    var currentBalance = parseFloat($("#currentBalance").val());
+    var usageAmount = parseFloat($("#usage").val());
+    if (!isNaN(currentBalance) && !isNaN(usageAmount)) {
+        var remainingBalance = Math.floor(currentBalance - usageAmount);
+        $("#remainingBalance").val(remainingBalance);
     }
+}
+
+
+onload = function myInfo() {
+	function updateRemainingBalance() {
+	    var currentBalance = parseFloat($("#currentBalance").val());
+	    var usageAmount = parseFloat($("#usage").val());
+	    if (!isNaN(currentBalance) && !isNaN(usageAmount)) {
+	        var remainingBalance = Math.floor(currentBalance - usageAmount);
+	        $("#remainingBalance").val(remainingBalance);
+	    }
+	}
     $.ajax({
         url: "/banking/getMyAccount",
         method: "get",
@@ -29,6 +39,8 @@ onload = function myInfo() {
                 option.val(account.money);
                 option.text(account.account_num_masked + ' [' + account.bank_name + ']');
                 accountDropdown.append(option);
+                $("#currentBalance").val(account.money);
+                $("#finusenum").val(account.fintech_use_num);
             });
             accountDropdown.change(function() {
                 var selectedValue = $(this).val();
@@ -41,16 +53,28 @@ onload = function myInfo() {
             $("#moneyDiv").show();
         }
     });
+    
+    $("#usage").on("input", function() {
+        updateRemainingBalance();
+    });
 }
 
-$("#usage").on("input", function() {
-    updateRemainingBalance();
-});
+
 
 function payInfo() {
     var selectedfinusenum = $("#finusenum").val();
     var remainingBalance = $("#remainingBalance").val();
     var usage = $("#usage").val();
+
+    if (parseFloat(remainingBalance) < 0) {
+        alert("잔액이 모자랍니다.");
+        return; 
+    }
+
+    if (parseFloat(usage) < 0) {
+        alert("결제금액을 확인해주세요.");
+        return; 
+    }
 
     $.ajax({
         url: "/cal/pay",
@@ -74,6 +98,8 @@ function payInfo() {
         }
     });
 }
+
+
 
     
 function updatePaymentSelect(selectedValue) {

@@ -30,4 +30,6 @@ public interface UserMapper {
 
       public String CheckAccount(String fintech_use_num);
       
+      public List<Map<String, Object>> dayUseMoney(String email);
+      
 }

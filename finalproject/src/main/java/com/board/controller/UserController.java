@@ -188,6 +188,11 @@ public class UserController {
 	   return "user/useraccount";
    }
    
+   @GetMapping(value = "/userUseMoney")
+   public String userUseMoney() {
+	   return "user/userUseMoney";
+   }
+   
 }
 
 

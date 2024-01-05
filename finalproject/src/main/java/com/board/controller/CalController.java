@@ -42,11 +42,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.board.command.InsertCalCommand;
-import com.board.command.UpdateReviewCommand;
 import com.board.dtos.CalDto;
-import com.board.dtos.ReviewDto;
 import com.board.dtos.UserDto;
 import com.board.service.CalService;
+import com.board.service.UserService;
 import com.board.utils.Util;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,7 +57,8 @@ public class CalController {
    
    @Autowired
    CalService calService;
-   
+   @Autowired
+   UserService userService;
     @GetMapping(value="/calendar")
        public String calendar(Model model, HttpServletRequest request, String ykiho, String yadmNm) {
           System.out.println("병원의 예약 현황 보기");
@@ -85,7 +85,34 @@ public class CalController {
          
           return "cal/Calendar";
        }
-       
+    @GetMapping(value="/userCal")
+    public String usercalendar(Model model, HttpServletRequest request) {
+    	HttpSession session=request.getSession();
+    	String email = ((UserDto) session.getAttribute("ldto")).getEmail();
+       //달력에서 일일별 일정목록 구하기
+       String year=request.getParameter("year");
+       String month=request.getParameter("month");
+      
+       if(year==null||month==null) {
+          Calendar cal=Calendar.getInstance();
+          year=cal.get(Calendar.YEAR)+"";
+          month=(cal.get(Calendar.MONTH)+1)+"";
+       }
+       System.out.println("year:"+year);
+       System.out.println("month:"+month);
+       //달력만들기위한 값 구하기
+       Map<String, Integer>map=calService.makeCalendar(request);
+       model.addAttribute("calMap", map);
+       model.addAttribute("email",email);
+       String yyyyMM=year+Util.isTwo(month);//202311 6자리변환
+//       List<CalDto>clist=calService.usercalViewList(yyyyMM, email);
+//       System.out.println(clist);
+//       
+//       
+//       model.addAttribute("clist", clist);
+      
+       return "user/userCal";
+    }
        @ResponseBody
        @GetMapping(value = "/cal", produces = "application/json")
        public ResponseEntity<List<Map<String,String>>> cal(String sgguCd, String dgsbjtCd, String ykiho) throws IOException, ParserConfigurationException {
@@ -242,14 +269,6 @@ public class CalController {
            }
        }
        
-       @GetMapping(value = "/calBoardDetail")
-       public String calBoardDetail(int seq, Model model) {
-          CalDto dto = calService.getBoard(seq);
-          model.addAttribute("dto",dto);
-
-          return "cal/calBoardDetail";
-       }
-       
 
        
        @ResponseBody
@@ -267,8 +286,8 @@ public class CalController {
 
        @ResponseBody
        @GetMapping(value="/calCountAjax")
-       public Map<String,Integer> calCountAjax(String yyyyMMdd, String ykiho){
-
+       public Map<String,Integer> calCountAjax(String yyyyMMdd,String ykiho){
+    	  System.out.println(ykiho);
           Map<String, Integer>map=new HashMap<>();
           int count=calService.calBoardCount(yyyyMMdd,ykiho);
           map.put("count", count);

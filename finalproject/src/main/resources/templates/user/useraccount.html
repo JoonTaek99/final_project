@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorate="~{layouts/layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
     <style type="text/css">
         body {
             background-color: #f2f2f2;
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
+            position: relative;
         }
 
         #list {
@@ -22,6 +22,7 @@
         }
 
         .box {
+            position: relative;
             width: 300px;
             background-color: #fff;
             border: 1px solid #ddd;
@@ -32,7 +33,10 @@
             margin-top: auto;
         }
 
-        h1 {
+        h2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             font-size: 24px;
             color: #3498db;
             margin-bottom: 10px;
@@ -45,8 +49,9 @@
         }
 
         .sub_menu {
+            display: flex;
+            justify-content: flex-end;
             margin-top: 10px;
-            text-align: center;
         }
 
         .balance {
@@ -68,12 +73,11 @@
             background-color: #2078c3;
         }
 
-        .balance_amt {
-            margin-top: 10px;
-        }
-
         .addAccount {
-            margin-top: 20px;
+            position: absolute;
+            top: 100px;
+            /* Adjust the top value as needed */
+            right: 100px;
             text-align: center;
         }
 
@@ -90,109 +94,120 @@
         .addAccount button:hover {
             background-color: #2078c3;
         }
+
     </style>
-<script type="text/javascript">
-//나의 정보조회[계좌목록]
-onload=function myInfo(){
-   $.ajax({
-      url:"/banking/myinfo",
-      method:"get",
-      dataType:"json",
-      success:function(data){
-         console.log(data.res_list);
-         var res_list=data.res_list;//나의 계좌목록 저장
 
-         
-         //출력할 내용
-         //계좌이름
-         //핀테크이용번호 [은행이름]
-         for (var i = 0; i < res_list.length; i++) {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+    <script type="text/javascript">
+        // 나의 정보조회[계좌목록]
+        onload = function myInfo() {
             $.ajax({
-               url:"/banking/CheckAccount",
-                 method:"get",
-                 dataType:"json",
-                 async:false,
-                 data:{"fintech_use_num":res_list[i].fintech_use_num},
-                 success:function(data){
-                    if(data.fintech_use_num==null){ // 등록되지 않은 계좌
-                       $("#list").append(
-                                 '<div class="box container">'
-                                     +'   <div>'
-                                     +'      <h1>'+res_list[i].account_alias+'</h1>'
-                                     +'      <p>'+res_list[i].fintech_use_num+' 계좌번호 : ' + res_list[i].account_num_masked + ' ['+res_list[i].bank_name+']</p>'
-                                     +'   </div>'
-                                     +'   <div class="sub_menu"> '
-                                     +'      <button  onclick="insertaccount(\''+res_list[i].fintech_use_num+'\', \''+res_list[i].account_num_masked+'\', this)" class="balance">계좌 인증</button>'
-                                     +'   </div>'
-                                     +'   <div class="balance_amt"></div>'
-                                     +'</div>   '
-                              )
-                  }else{  // 등록된 계좌
-                      $("#list").append(
-                               '<div class="box container">'
-                                   +'   <div>'
-                                   +'      <h1>'+res_list[i].account_alias+'</h1>'
-                                   +'      <p>'+res_list[i].fintech_use_num+' 계좌번호 : ' + res_list[i].account_num_masked + ' ['+res_list[i].bank_name+']</p>'
-                                   +'   </div>'
-                                   +'   <div class="sub_menu"> '
-                                   +'      <button  onclick="insertaccount(\''+res_list[i].fintech_use_num+'\',this)" class="balance" disabled="disabled">인증 완료</button>'
-                                   +'   </div>'
-                                   +'   <div class="balance_amt"></div>'
-                                   +'</div>   '
-                            )
-                  }
-                 }
+                url: "/banking/myinfo",
+                method: "get",
+                dataType: "json",
+                success: function (data) {
+                    console.log(data.res_list);
+                    var res_list = data.res_list; // 나의 계좌목록 저장
+
+                    // 출력할 내용
+                    // 계좌이름
+                    // 핀테크이용번호 [은행이름]
+                    for (var i = 0; i < res_list.length; i++) {
+                        $.ajax({
+                            url: "/banking/CheckAccount",
+                            method: "get",
+                            dataType: "json",
+                            async: false,
+                            data: { "fintech_use_num": res_list[i].fintech_use_num },
+                            success: function (data) {
+                                if (data.fintech_use_num == null) { // 등록되지 않은 계좌
+                                    $("#list").append(
+                                        '<div class="box container">'
+                                        + '   <div>'
+                                        + '      <h2>' + res_list[i].account_alias + '</h2>'
+                                        + '      <p class="fintech" style="display: none;">' + res_list[i].fintech_use_num + '</p>'
+                                        + '      <p class="bank-name" style="font-weight: bold;">은행이름 : ' + res_list[i].bank_name + '</p>'
+                                        + '      <p class="account-number">계좌번호 : ' + res_list[i].account_num_masked + '</p>'
+                                        + '   </div>'
+                                        + '   <div class="sub_menu"> '
+                                        + '      <button  onclick="insertaccount(\'' + res_list[i].fintech_use_num + '\', \'' + res_list[i].account_num_masked + '\', this)" class="balance">계좌 인증</button>'
+                                        + '   </div>'
+                                        + '   <div class="balance_amt"></div>'
+                                        + '</div>   '
+                                    )
+                                } else {  // 등록된 계좌
+                                    $("#list").append(
+                                        '<div class="box container">'
+                                        + '   <div>'
+                                        + '      <h2>' + res_list[i].account_alias + '</h2>'
+                                        + '      <p class="fintech" style="display: none;">' + res_list[i].fintech_use_num + '</p>'
+                                        + '      <p class="bank-name" style="font-weight: bold;">은행이름 : ' + res_list[i].bank_name + '</p>'
+                                        + '      <p class="account-number">계좌번호 : ' + res_list[i].account_num_masked + '</p>'
+                                        + '   </div>'
+                                        + '   <div class="sub_menu"> '
+                                        + '      <button  onclick="insertaccount(\'' + res_list[i].fintech_use_num + '\',this)" class="balance" disabled="disabled">인증 완료</button>'
+                                        + '   </div>'
+                                        + '   <div class="balance_amt"></div>'
+                                        + '</div>   '
+                                    )
+                                }
+                            }
+                        });
+
+                    }
+
+                    $("#list").append('<div class="addAccount">'
+                        + '  <button onclick="addAccount()">계좌등록</button>'
+                        + '</div>')
+                }
             });
-            
-         }
-         
-         $("#list").append('<div class="addAccount">'
-                 +'  <button onclick="addAccount()">계좌등록</button>'
-                 +'</div>')
-      }
-   });
-}
-function insertaccount(fintech_use_num, account_num_masked) {
-
-    $.ajax({
-        url: "/banking/insertaccount",
-        method: "get",
-        data: {"fintech_use_num": fintech_use_num, "account_num_masked": account_num_masked },
-        dataType: "json",
-        success: function (data) {
-            alert("인증이 완료되었습니다.");
-
-        },
-        error: function () {
-            alert("인증에 실패했습니다.");
         }
-    });
-}
 
-function totalmoney(){
-   location.href="/banking/total";
-}
+        function insertaccount(fintech_use_num, account_num_masked) {
 
-//계좌등록하기(센터인증 이용기관용: 사용자 인증후에 계좌 등록 가능)
-function addAccount(){
-   var url="https://testapi.openbanking.or.kr/oauth/2.0/authorize?"
-         +"response_type=code&" //고정값 code: 인증요청시 반환되는 값의 형식의미
-         +"client_id=4987e938-f84b-4e23-b0a2-3b15b00f4ffd&" //이용기관의 ID
-         +"redirect_uri=http://localhost:8087/banking/addaccount&"//응답URL
-         +"scope=login inquiry transfer&" //토큰의 권한
-         +"state=12345678123456781234567812345678&" //32자리 난수 설정
-         +"auth_type=0"; //0:최초 한번 인증, 2:인증생략
-         
-   window.open(url,"인증하기","width=400px,height=600px");      
-}
-</script>
+            $.ajax({
+                url: "/banking/insertaccount",
+                method: "get",
+                data: { "fintech_use_num": fintech_use_num, "account_num_masked": account_num_masked },
+                dataType: "json",
+                success: function (data) {
+                    alert("인증이 완료되었습니다.");
+
+                },
+                error: function () {
+                    alert("인증에 실패했습니다.");
+                }
+            });
+        }
+
+        function totalmoney() {
+            location.href = "/banking/total";
+        }
+
+        // 계좌등록하기(센터인증 이용기관용: 사용자 인증후에 계좌 등록 가능)
+        function addAccount() {
+            var url = "https://testapi.openbanking.or.kr/oauth/2.0/authorize?"
+                + "response_type=code&" //고정값 code: 인증요청시 반환되는 값의 형식의미
+                + "client_id=4987e938-f84b-4e23-b0a2-3b15b00f4ffd&" //이용기관의 ID
+                + "redirect_uri=http://localhost:8087/banking/addaccount&" //응답URL
+                + "scope=login inquiry transfer&" //토큰의 권한
+                + "state=12345678123456781234567812345678&" //32자리 난수 설정
+                + "auth_type=0"; //0:최초 한번 인증, 2:인증생략
+
+            window.open(url, "인증하기", "width=400px,height=600px");
+        }
+
+            
+    </script>
 </head>
+
 <body>
 
-<div layout:fragment="content">
-<h1>계좌 확인</h1>
-   <div id="list" >
-   </div>
-</div>
+    <div layout:fragment="content">
+        <h1>계좌 확인</h1>
+        <div id="list"></div>
+    </div>
 </body>
+
 </html>

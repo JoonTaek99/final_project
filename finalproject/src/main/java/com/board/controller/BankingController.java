@@ -275,7 +275,17 @@ public class BankingController {
       return map;
    }
    
-   
+   @ResponseBody
+   @GetMapping("/dayUseMoney")
+   public List<Map<String, Object>> dayUseMoney(HttpServletRequest request) {
+       HttpSession session = request.getSession();
+       UserDto ldto = (UserDto) session.getAttribute("ldto");
+       String email = ldto.getEmail();
+
+       List<Map<String, Object>> result = userService.dayUseMoney(email);
+       System.out.println(result);
+       return result;
+   }
    
    //이용기관 부여번호 9자리를 생성하는 메서드
    public String createNum() {

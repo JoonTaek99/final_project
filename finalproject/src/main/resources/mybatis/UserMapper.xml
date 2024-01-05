@@ -56,6 +56,16 @@
    <select id="CheckAccount" parameterType="String" resultType="String">
 		SELECT FINTECH_USE_NUM FROM USERACCOUNT WHERE FINTECH_USE_NUM = #{fintech_use_num}
 	</select>
+	
+	<select id="dayUseMoney" parameterType="String" resultType="Map">
+		SELECT REGDATE, SUM(USEMONEY) AS TOTALUSEMONEY
+		FROM RESERVEBOARD
+		WHERE EMAIL = #{email}
+		GROUP BY REGDATE
+		ORDER BY REGDATE
+		LIMIT 3
+	</select>
+	
    
 </mapper>
 

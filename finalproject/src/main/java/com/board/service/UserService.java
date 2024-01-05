@@ -80,7 +80,9 @@ public class UserService {
 	      return userMapper.CheckAccount(fintech_use_num);
 	   }
    
-   
+   public List<Map<String, Object>> dayUseMoney(String email){
+	   return userMapper.dayUseMoney(email);
+   }
    
    
 }

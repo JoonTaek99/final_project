@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <style type="text/css">
+        body {
+            background-color: #f2f2f2;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        #lineChartContainer {
+            width: 800px;
+            height: 400px;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+
+    <script type="text/javascript">
+        
+        // 바 그래프를 그리는 함수
+        function drawBarChart(labels, data) {
+            var ctx = document.getElementById('lineChart').getContext('2d');
+            var barChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Total Use Money',
+                        backgroundColor: 'rgb(75, 192, 192)',
+                        data: data,
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'category',
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        function drawChartWithData() {
+            $.ajax({
+                url: "/banking/dayUseMoney",
+                method: "get",
+                dataType: "json",
+                async: false,
+                success: function (data) {
+                    var labels = [];
+                    var chartData = [];
+
+                    for (var i = 0; i < data.length; i++) {
+                        labels.push(data[i].REGDATE);
+                        chartData.push(data[i].TOTALUSEMONEY);
+                    }
+
+                    drawBarChart(labels, chartData);
+                },
+
+                error: function () {
+                    console.log("데이터 가져오기 실패");
+                }
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            drawChartWithData();
+        });
+    </script>
+</head>
+
+<body>
+
+    <div layout:fragment="content">
+        <h1>계좌 확인</h1>
+        <div id="lineChartContainer">
+            <canvas id="lineChart"></canvas>
+        </div>
+    </div>
+</body>
+
+</html>
