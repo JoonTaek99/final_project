@@ -32,4 +32,7 @@ public interface ReviewMapper {
       
       //페이징
       public int getPCount();
+      
+   // 검색관련 목록
+  	public List<ReviewDto> getSelectList(String searchWord);
 }

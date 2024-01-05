@@ -71,6 +71,29 @@ public class ReviewController {
       return "review/reviewList";
    }
    
+   @PostMapping(value = "/selectList")
+	public String SelectList(HttpServletRequest request, Model model, String searchWord, String pnum) {
+		System.out.println("검색목록 보기");
+		HttpSession session=request.getSession();
+	      if(pnum==null) {
+	         pnum=(String)session.getAttribute("pnum");//현재 조회중인 페이지번호
+	      }else {
+	         //새로 페이지를 요청할 경우 세션에 저장
+	         session.setAttribute("pnum", pnum);
+	      }
+	      int pcount=reviewService.getPCount();
+	      model.addAttribute("pcount", pcount);
+	      
+	      Map<String, Integer>map=Paging.pagingValue(pcount, pnum, 10);
+	      model.addAttribute("pMap", map);
+	      
+	      
+		List<ReviewDto> list = reviewService.getSelectList(searchWord);
+		model.addAttribute("list", list);
+		return "review/reviewList";
+	}
+   
+   
    @GetMapping(value = "/reviewInsert")
    public String boardInsertForm(Model model) {
       System.out.println("글추가폼 이동");
@@ -119,9 +142,6 @@ public class ReviewController {
       return "redirect:/review/reviewDetail?board_seq="+ updateReviewCommand.getBoard_seq();
       
    }
-
-
-   
    
    @RequestMapping(value="mulDel",method = {RequestMethod.GET, RequestMethod.POST})
    public String mulDel(@Validated DelReviewCommand delReviewCommand

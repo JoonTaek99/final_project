@@ -95,6 +95,11 @@ public class ReviewService {
    public boolean mulDel(String[] seqs) {
        return reviewMapper.mulDel(seqs);
     }
+   
+   public List<ReviewDto> getSelectList(String searchWord){
+		return reviewMapper.getSelectList(searchWord);
+	}
+   
 }
 
 

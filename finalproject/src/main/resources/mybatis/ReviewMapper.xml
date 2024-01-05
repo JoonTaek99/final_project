@@ -66,6 +66,12 @@
       </foreach>
    </update>
    
+   <select id="getSelectList" parameterType="String" resultType="reviewDto">
+      SELECT BOARD_SEQ, EMAIL, TITLE, HOS_NAME, REGDATE, READCOUNT
+      FROM BOARD
+      WHERE TITLE LIKE CONCAT('%' ,#{searchWord}, '%') OR HOS_NAME LIKE CONCAT('%' ,#{searchWord}, '%')
+   </select>
+   
 </mapper>
 
 
