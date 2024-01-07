@@ -1,93 +1,178 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorate="~{layouts/layout}">
 <head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<script type="text/javascript">
-function allSel(bool){
-   var chks=document.getElementsByName("seq");// [seq,seq,seq,seq..]
-   for (var i = 0; i < chks.length; i++) {
-      chks[i].checked=bool;//각각의 체크박스에 체크여부를 true/false로 적용
-   }
-}
+    <meta charset="UTF-8">
+    <title>Review List</title>
+    <script type="text/javascript">
+        function allSel(bool) {
+            var chks = document.getElementsByName("seq");
+            for (var i = 0; i < chks.length; i++) {
+                chks[i].checked = bool;
+            }
+        }
 
-function isCheck(){
-   if(confirm("정말 삭제 하시겠습니까?")){
-      return true;
-   }
-   return false;
-}
-</script>
-<style type="text/css">
-th, td{
-   text-align: center;
-}
-</style>
+        function isCheck() {
+            if (confirm("정말 삭제 하시겠습니까?")) {
+                return true;
+            }
+            return false;
+        }
+    </script>
+    <style type="text/css">
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        #container {
+            width: 80%;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .search {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #search {
+            width: 80%;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+
+        #add, .btn {
+            margin-top: 10px;
+            background-color: #2078c3;
+            color: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            line-height : 3px;
+        }
+
+        #add:hover, .btn:hover {
+            background-color: #205b8c;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        a:hover {
+            color: #2078c3;
+        }
+
+        .pagination {
+            margin: 0;
+        }
+
+        .pagination li {
+            display: inline-block;
+            margin: 0 5px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            color: #333;
+            padding: 10px 20px;
+            border: 1px solid #ddd;
+        }
+
+        .pagination .active a {
+            background-color: #2078c3;
+            color: #fff;
+        }
+    </style>
 </head>
 <body>
 
 <div layout:fragment="content">
-<div id="container">
-<h1>리뷰 목록</h1>
-<form action="/review/selectList" method="post">
-<div class="search" style="text-align: center;">
-		<input type="text" id="search" name="searchWord" style="float: left;"  placeholder="검색어 입력" />
-		<button id="add" type="submit" style="float: left;" class="btn btn-dark mt-3" >검색</button>
-	</div>
-   <table class="table table-bordered table-striped col-md-12" id="news" >
-      <tr>
-         <th>작성자</th>
-         <th>병원이름</th>
-         <th>제목</th>
-         <th>작성일</th>
-         <th>조회수</th>
-      </tr>   
-      <th:block th:if="${#lists.isEmpty(list)}">
-         <tr>
-            <td colspan="5" style="text-align: center;">---작성된 후기가 없습니다---</td>
-         </tr>
-      </th:block>
-      <th:block th:unless="${#lists.isEmpty(list)}">
-         <tr th:each="dto:${list}">
-            <td th:text="${dto.email}"></td>
-            <td th:text="${dto.hos_name}"></td>
-            <td>
-               <a th:href="@{/review/reviewDetail(board_seq=${dto.board_seq})}" th:text="${dto.title}"></a>
-            </td>
-            <td th:text="${#dates.format(dto.regdate, 'yyyy-MM-dd')}"></td>
-            <td th:text="${dto.readCount}"></td>
-
-         </tr>
-      </th:block>
-            <tr>
-         <td colspan="10" style="text-align: center;">
-<!--             페이징 처리부분 시작 -->
-            <nav>
-              <ul class="pagination">
-                <li ><a th:href="@{/review/reviewList(pnum=${pMap.prePageNum})}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
-                <th:block th:each="i:${#numbers.sequence(pMap.startPage,pMap.endPage)}">
-                   <li th:class="${session.pnum}==${i}?'active':''"><a th:href="@{/review/reviewList(pnum=${i})}">[[${i}]]<span class="sr-only">(current)</span></a></li>
-                </th:block> 
-                <li ><a th:href="@{/review/reviewList(pnum=${pMap.nextPageNum})}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
-              </ul>
-            </nav>
-<!--             페이징 처리부분 종료 -->
-         </td>
-      </tr>
-         <tr>
-            <td colspan="7">
-                     <button type="button" class="btn"
-                     th:onclick="|location.href='@{/review/reviewInsert}'|">글추가</button>
-                     <button type="submit" class="btn">글삭제</button>
-            </td>
-            
-         </tr>
-   </table>
-</form>
-</div>
+     <h1>리뷰 목록</h1>
+    <div id="container">
+        <form action="/review/selectList" method="post">
+            <div class="search">
+                <input type="text" id="search" name="searchWord" placeholder="검색어 입력" />
+                <button id="add" type="submit" class="btn btn-dark">검색</button>
+            </div>
+            <table class="table table-bordered table-striped">
+                <tr>
+                    <th>작성자</th>
+                    <th>병원이름</th>
+                    <th>제목</th>
+                    <th>작성일</th>
+                    <th>조회수</th>
+                </tr>
+                <th:block th:if="${#lists.isEmpty(list)}">
+                    <tr>
+                        <td colspan="5" style="text-align: center;">---작성된 후기가 없습니다---</td>
+                    </tr>
+                </th:block>
+                <th:block th:unless="${#lists.isEmpty(list)}">
+                    <tr th:each="dto:${list}">
+                        <td th:text="${dto.email}"></td>
+                        <td th:text="${dto.hos_name}"></td>
+                        <td>
+                            <a th:href="@{/review/reviewDetail(board_seq=${dto.board_seq})}" th:text="${dto.title}"></a>
+                        </td>
+                        <td th:text="${#dates.format(dto.regdate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${dto.readCount}"></td>
+                    </tr>
+                </th:block>
+                <tr>
+                    <td colspan="5" style="text-align: center;">
+                        <nav>
+                            <ul class="pagination">
+                                <li><a th:href="@{/review/reviewList(pnum=${pMap.prePageNum})}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+                                <th:block th:each="i:${#numbers.sequence(pMap.startPage,pMap.endPage)}">
+                                    <li th:class="${session.pnum}==${i}?'active':''"><a th:href="@{/review/reviewList(pnum=${i})}">[[${i}]]</a></li>
+                                </th:block>
+                                <li><a th:href="@{/review/reviewList(pnum=${pMap.nextPageNum})}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+                            </ul>
+                        </nav>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        <button type="button" class="btn" th:onclick="|location.href='@{/review/reviewInsert}'|">글추가</button>
+                        <button type="submit" class="btn" onclick="return isCheck()">글삭제</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
 </div>
 </body>
 </html>

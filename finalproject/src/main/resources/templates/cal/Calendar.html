@@ -3,138 +3,193 @@
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorate="~{layouts/layout}">
 <head>
-<meta charset="UTF-8">
-<title></title>
-<style type="text/css">
-   .cal{width:100%;}
-   .cal #thead > div, .cal #tbody > div{display: inline-block; width: 140px;}
-   .cal #tbody > div{
-         height: 120px; 
-         vertical-align: top; 
-         border-top:1px solid gray;
-         position: relative;
-   }
-   #ctitle{
-/*          text-align: center; */
-         margin-left: 337px;
-   }
-   .pen{ width:20px; height:20px;}
-   .d{
-      font-weight:bold;
-      font-size:17px;
-   }
-   #tbody > div > p{background-color:rgb(128, 128, 128); color:white;}
-   .cp{
-      position: absolute;
-      left: 20px;
-      top: -40px;
-      width:40px;
-      height:40px;
-      border-radius: 20px 20px 20px 1px;
-      color: white;
-      background-color: rgb(255, 128, 0);
-      line-height: 40px;
-      text-align: center;
-      font-weight: bold;
-   }
-</style>
-<script type="text/javascript">
-   $(function(){
-      $(".d").hover(function(){
-         //controller로 전달할 파라미터 yyyyMM를 구함
-         var aDate = $(this); // 현재 마우스가 올라간 a 태그(.d) 구함
-         var year=$(".y").text().trim(); // 년도
-         var month=$(".m").text().trim(); // 월
-         var date = aDate.text().trim(); // 일
-         var yyyyMMdd = year+(month.length<2?"0"+month:month)
-                              +(date.length<2?"0"+date:date); //8자리 만들기
-         var ykiho = document.getElementById("ykiho").value;
-         if(aDate.nextAll("p").length>0){
-            $.ajax({
-               url:"/cal/calCountAjax",
-               method:"get",
-               data:{"yyyyMMdd":yyyyMMdd,"ykiho":ykiho}, // 서버로 전달하는 값
-               dataType:"json", // 서버에서 전달받은 데이터 타입
-               async:false, // ajax() 메서드가 비동기로 실행되는것을 막음 : false 설정
-               success:function(data){ // 성공하면 데이터가 data 변수에 저장됨
-                  aDate.after("<div class='cp'>"+data.count+"</div>");
-               },
-               error:function(){
-                  alert("통신실패");
-               }
-            });
-         }
-      }, function(){
-         $(".cp").remove();
-      });
-   });
-   
-   
-   onload=function(){
-      var ykiho = document.getElementById("ykiho").value;
-//       console.log(ykiho);
-      $.ajax({
-           url: "/cal/cal",
-           method: "get",
-           data: { "ykiho": ykiho },
-           dataType: "json",
-           success: function (data) {
-               console.log(data);
-           $("#list").empty();
-              var table = "";
-                  $.each(data, function (index, value) {
-                      table += "<h1>" + value.yadmNm + "</h1>";
-                  });
-                  table += "</tbody></table>";
-                  $("#list").append(table);
-           },
-           error: function () {
-               alert("통신실패");
-           }
-       });
-   }
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <style type="text/css">
+        body {
+            background-color: #f2f2f2;
+        }
 
-</script>
+        .cal {
+            width: 100%;
+            font-family: 'Lato', sans-serif;
+        }
+
+        .cal #thead > div, .cal #tbody > div {
+            background-color: #FFFFFF;
+            width: 140px;
+            height: 40px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .cal #tbody > div {
+            height: 120px;
+            vertical-align: top;
+            border-top: 0.5px solid gray;
+        }
+
+        .cal #thead {
+            text-align: center;
+            display: inline-block;
+            text-align: center;
+            line-height: 40px;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .cal #thead > div {
+            width: 140px;
+        }
+
+        #ctitle {
+        -webkit-border-radius: 12px 12px 0px 0px;
+        -moz-border-radius: 12px 12px 0px 0px;
+        border-radius: 12px 12px 0px 0px;
+        width: 1010px; /* Set the width to 980px */
+        height: 60px;
+        text-align: center;
+        background-color: #3498db;
+        padding: 18px 0;
+        font-size: 28px;
+        color: #FFFFFF;
+        float: left;
+    }
+
+        .pen {
+            width: 20px;
+            height: 20px;
+        }
+
+        .d {
+            font-weight: bold;
+            font-size: 17px;
+        }
+
+        #tbody > div > p {
+            background-color: rgb(128, 128, 128);
+            color: white;
+        }
+
+        .cp {
+            position: absolute;
+            left: 20px;
+            top: -40px;
+            width: 40px;
+            height: 40px;
+            border-radius: 20px 20px 20px 1px;
+            color: white;
+            background-color: rgb(255, 128, 0);
+            line-height: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            $(".d").hover(function () {
+                var aDate = $(this);
+                var year = $(".y").text().trim();
+                var month = $(".m").text().trim();
+                var date = aDate.text().trim();
+                var yyyyMMdd = year + (month.length < 2 ? "0" + month : month)
+                    + (date.length < 2 ? "0" + date : date);
+                var ykiho = document.getElementById("ykiho").value;
+                if (aDate.nextAll("p").length > 0) {
+                    $.ajax({
+                        url: "/cal/calCountAjax",
+                        method: "get",
+                        data: { "yyyyMMdd": yyyyMMdd, "ykiho": ykiho },
+                        dataType: "json",
+                        async: false,
+                        success: function (data) {
+                            aDate.after("<div class='cp'>" + data.count + "</div>");
+                        },
+                        error: function () {
+                            alert("통신실패");
+                        }
+                    });
+                }
+            }, function () {
+                $(".cp").remove();
+            });
+        });
+
+        onload = function () {
+            var ykiho = document.getElementById("ykiho").value;
+            $.ajax({
+                url: "/cal/cal",
+                method: "get",
+                data: { "ykiho": ykiho },
+                dataType: "json",
+                success: function (data) {
+                    $("#list").empty();
+                    var table = "";
+                    $.each(data, function (index, value) {
+                        table += "<h1>" + value.yadmNm + "</h1>";
+                    });
+                    table += "</tbody></table>";
+                    $("#list").append(table);
+                },
+                error: function () {
+                    alert("통신실패");
+                }
+            });
+        }
+
+    </script>
 </head>
 <body>
 <div layout:fragment="content">
-   <div id="container1">
-         <div id="list"></div>
-      <input type="hidden" th:value="${ykiho}" id="ykiho" />
-      <input type="hidden" th:value="${yadmNm}" id="yadmNm" /> 
-      <div class="cal">
-         <div id="ctitle">
-            <a th:href="@{/cal/calendar(year=${calMap.year-1},month=${calMap.month},ykiho=${ykiho})}">◀</a>
-            <a th:href="@{/cal/calendar(year=${calMap.year},month=${calMap.month-1},ykiho=${ykiho})}">◁</a>
-            <span class="y" th:text="${calMap.year}"></span>
-            <span>년</span>
-            <span class="m" th:text="${calMap.month}"></span>
-            <span>월</span>
-            <a th:href="@{/cal/calendar(year=${calMap.year},month=${calMap.month+1},ykiho=${ykiho})}">▷</a>
-            <a th:href="@{/cal/calendar(year=${calMap.year+1},month=${calMap.month},ykiho=${ykiho})}">▶</a>
-         </div>
-         <div id="thead">
-            <div>일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div>토</div>
-         </div>
-         <div id="tbody">
-            <th:block th:if="${calMap.dayOfWeek>1}">
-               <div th:each="num:${#numbers.sequence(1,calMap.dayOfWeek-1)}">&nbsp;</div>
-            </th:block>
-            <th:block th:each="i:${#numbers.sequence(1,calMap.lastDay)}">
-               <div>
-                  <a class="d" th:text="${i}" th:style="'color:'+${@util.fontColor(i, calMap.dayOfWeek)}"
-                     th:href="@{/cal/calBoardList(year=${calMap.year},month=${calMap.month},date=${i},ykiho=${ykiho},yadmNm=${yadmNm})}"
-                  ></a>
-               <a th:href="@{/cal/addCalBoardForm(year=${calMap.year},month=${calMap.month},date=${i},ykiho=${ykiho},yadmNm=${yadmNm})}">
-                                 <img class="pen" th:src="@{/css/pen.png}" />
-                              </a>
-                  [(${@util.getCalViewList(i,clist)})]
-                  
-               </div>
-            </th:block>
-         </div>
-      </div>
-   </div>
+    <div id="container1">
+        <div id="list"></div>
+        <input type="hidden" th:value="${ykiho}" id="ykiho" />
+        <input type="hidden" th:value="${yadmNm}" id="yadmNm" />
+        <div class="cal">
+            <div id="ctitle">
+                <a th:href="@{/cal/calendar(year=${calMap.year-1},month=${calMap.month},ykiho=${ykiho})}"><i class="fas fa-chevron-left"
+                                                                                                      style="color: #ffffff;"></i></a>
+                <a th:href="@{/cal/calendar(year=${calMap.year},month=${calMap.month-1},ykiho=${ykiho})}"><i class="fas fa-chevron-left"
+                                                                                                              style="color: #ffffff;"></i></a>
+                <span class="y" th:text="${calMap.year}"></span>
+                <span>년</span>
+                <span class="m" th:text="${calMap.month}"></span>
+                <span>월</span>
+                <a th:href="@{/cal/calendar(year=${calMap.year},month=${calMap.month+1},ykiho=${ykiho})}"><i class="fas fa-chevron-right"
+                                                                                                               style="color: #ffffff;"></i></a>
+                <a th:href="@{/cal/calendar(year=${calMap.year+1},month=${calMap.month},ykiho=${ykiho})}"><i class="fas fa-chevron-right"
+                                                                                                               style="color: #ffffff;"></i></a>
+            </div>
+            <div id="thead">
+                <div>일</div>
+                <div>월</div>
+                <div>화</div>
+                <div>수</div>
+                <div>목</div>
+                <div>금</div>
+                <div>토</div>
+            </div>
+            <div id="tbody">
+                <th:block th:if="${calMap.dayOfWeek>1}">
+                    <div th:each="num:${#numbers.sequence(1,calMap.dayOfWeek-1)}">&nbsp;</div>
+                </th:block>
+                <th:block th:each="i, iterStat :${#numbers.sequence(1,calMap.lastDay)}">
+                    <div>
+                        <a class="d" th:text="${i}" th:style="'color:'+${@util.fontColor(i, calMap.dayOfWeek)}"
+                           th:href="@{/cal/calBoardList(year=${calMap.year},month=${calMap.month},date=${i},ykiho=${ykiho},yadmNm=${yadmNm})}"
+                        ></a>
+                        <a th:href="@{/cal/addCalBoardForm(year=${calMap.year},month=${calMap.month},date=${i},ykiho=${ykiho},yadmNm=${yadmNm})}">
+                            <img class="pen" th:src="@{/css/pen.png}" />
+                        </a>
+                        [(${@util.getCalViewList(i,clist)})]
+                    </div>
+	                <th:block th:if="${iterStat.last}">
+			            <div th:each="num : ${#numbers.sequence(1, 7 - ((calMap.dayOfWeek - 1 + iterStat.count) % 7))}">&nbsp;</div>
+			        </th:block>
+                </th:block>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>

@@ -12,40 +12,72 @@
             padding: 0;
             position: relative;
         }
+        
+         #lineChart {
+            background-color: white; 
+        }
 
         #lineChartContainer {
-            width: 800px;
-            height: 400px;
+          width: 800px;
+          height: 400px;
+          margin: 0 auto; /* 가운데 정렬을 위한 margin 속성 추가 */
+      }
+
+
+        #differenceContainer {
+            margin-top: 20px;
+            font-size: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
         }
     </style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
     <script type="text/javascript">
-        
-        // 바 그래프를 그리는 함수
-        function drawBarChart(labels, data) {
-            var ctx = document.getElementById('lineChart').getContext('2d');
-            var barChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Total Use Money',
-                        backgroundColor: 'rgb(75, 192, 192)',
-                        data: data,
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            type: 'category',
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-        }
+        // 꺾은선 그래프를 그리는 함수
+        function drawLineChart(labels, data) {
+          var ctx = document.getElementById('lineChart').getContext('2d');
+          var lineChart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                  labels: labels,
+                  datasets: [{
+                      label: 'Total Use Money',
+                      borderColor: 'rgb(32, 120, 195)',
+                      data: data,
+                      fill: false,
+                  }]
+              },
+              options: {
+                  scales: {
+                      x: {
+                          type: 'category',
+                          position: 'bottom'
+                      },
+                      y: {
+                          beginAtZero: true
+                      }
+                  },
+                  plugins: {
+                      datalabels: {
+                          display: true,
+                          color: 'black',
+                          anchor: 'end',
+                          align: 'end',
+                          formatter: function(value, context) {
+                              return value.y;
+                          }
+                      }
+                  },
+              }
+          });
+      }
 
         function drawChartWithData() {
             $.ajax({
@@ -59,10 +91,23 @@
 
                     for (var i = 0; i < data.length; i++) {
                         labels.push(data[i].REGDATE);
-                        chartData.push(data[i].TOTALUSEMONEY);
+                        chartData.push({ x: data[i].REGDATE, y: data[i].TOTALUSEMONEY });
                     }
 
-                    drawBarChart(labels, chartData);
+                    drawLineChart(labels, chartData);
+
+                    var todayUseMoney = data[data.length - 1].TOTALUSEMONEY;
+                    var yesterdayUseMoney = data[data.length - 2].TOTALUSEMONEY;
+                    var difference = todayUseMoney - yesterdayUseMoney;
+
+                   var differenceContainer = document.getElementById('differenceContainer');
+               if (difference < 0) {
+                   differenceContainer.innerHTML = '어제보다 <u>' + Math.abs(difference) + '원</u> 만큼 덜 썼어요';
+               } else if (difference > 0) {
+                   differenceContainer.innerHTML = '어제보다 <u>' + difference + '원</u> 만큼 더 썼어요';
+               } else {
+                   differenceContainer.innerText = '어제와 동일한 금액을 사용했어요';
+               }
                 },
 
                 error: function () {
@@ -76,15 +121,13 @@
         });
     </script>
 </head>
-
 <body>
-
     <div layout:fragment="content">
         <h1>계좌 확인</h1>
         <div id="lineChartContainer">
             <canvas id="lineChart"></canvas>
         </div>
+        <div id="differenceContainer"></div>
     </div>
 </body>
-
 </html>
