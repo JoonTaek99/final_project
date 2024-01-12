@@ -12,27 +12,59 @@
             padding: 0;
             position: relative;
         }
-        
-         #lineChart {
-            background-color: white; 
+
+        #lineChart {
+            background-color:    #FFFAFA;
         }
 
         #lineChartContainer {
-          width: 800px;
-          height: 400px;
-          margin: 0 auto; /* 가운데 정렬을 위한 margin 속성 추가 */
-      }
-
+            width: 800px;
+            height: 400px;
+            margin: 0 auto;
+        }
 
         #differenceContainer {
             margin-top: 20px;
             font-size: 30px;
             text-align: center;
         }
-        
+
         h1 {
             text-align: center;
             margin-bottom: 20px;
+        }
+
+        /* 추가된 스타일: 날짜 범위 선택 관련 스타일 */
+        #dateRangeContainer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #dateRangeContainer label {
+            margin-right: 10px;
+        }
+        #container {
+            width: 80%;
+            margin: 30px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        button{
+           background-color: #3498db;
+           border: none;
+        }
+        #startDate, #endDate{
+           border-radius: 10px;
+           width : 200px;
+           text-align : center;
+           font-size : 15px;
+           margin : 10px;
+        }
+        label{
+           margin : 35px;
+           font-size : 18px;
         }
     </style>
 
@@ -40,94 +72,153 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0/dist/chartjs-plugin-datalabels.min.js"></script>
 
     <script type="text/javascript">
-        // 꺾은선 그래프를 그리는 함수
-        function drawLineChart(labels, data) {
-          var ctx = document.getElementById('lineChart').getContext('2d');
-          var lineChart = new Chart(ctx, {
-              type: 'line',
-              data: {
-                  labels: labels,
-                  datasets: [{
-                      label: 'Total Use Money',
-                      borderColor: 'rgb(32, 120, 195)',
-                      data: data,
-                      fill: false,
-                  }]
-              },
-              options: {
-                  scales: {
-                      x: {
-                          type: 'category',
-                          position: 'bottom'
-                      },
-                      y: {
-                          beginAtZero: true
-                      }
-                  },
-                  plugins: {
-                      datalabels: {
-                          display: true,
-                          color: 'black',
-                          anchor: 'end',
-                          align: 'end',
-                          formatter: function(value, context) {
-                              return value.y;
-                          }
-                      }
-                  },
-              }
-          });
-      }
+    var lineChart; // 전역 변수로 차트 객체 선언
 
-        function drawChartWithData() {
-            $.ajax({
-                url: "/banking/dayUseMoney",
-                method: "get",
-                dataType: "json",
-                async: false,
-                success: function (data) {
-                    var labels = [];
-                    var chartData = [];
-
-                    for (var i = 0; i < data.length; i++) {
-                        labels.push(data[i].REGDATE);
-                        chartData.push({ x: data[i].REGDATE, y: data[i].TOTALUSEMONEY });
-                    }
-
-                    drawLineChart(labels, chartData);
-
-                    var todayUseMoney = data[data.length - 1].TOTALUSEMONEY;
-                    var yesterdayUseMoney = data[data.length - 2].TOTALUSEMONEY;
-                    var difference = todayUseMoney - yesterdayUseMoney;
-
-                   var differenceContainer = document.getElementById('differenceContainer');
-               if (difference < 0) {
-                   differenceContainer.innerHTML = '어제보다 <u>' + Math.abs(difference) + '원</u> 만큼 덜 썼어요';
-               } else if (difference > 0) {
-                   differenceContainer.innerHTML = '어제보다 <u>' + difference + '원</u> 만큼 더 썼어요';
-               } else {
-                   differenceContainer.innerText = '어제와 동일한 금액을 사용했어요';
-               }
-                },
-
-                error: function () {
-                    console.log("데이터 가져오기 실패");
-                }
-            });
+    function drawLineChart(labels, data) {
+        var ctx = document.getElementById('lineChart').getContext('2d');
+        if (lineChart) {
+            lineChart.destroy();
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            drawChartWithData();
+        lineChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Total Use Money',
+                    borderColor: '#3498db',
+                    data: data,
+                    fill: false,
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        type: 'category',
+                        position: 'bottom'
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    datalabels: {
+                        display: true,
+                        color: 'black',
+                        anchor: 'end',
+                        align: 'end',
+                        formatter: function(value, context) {
+                            return value.y;
+                        }
+                    }
+                },
+            }
         });
+    }
+
+    function drawChartWithData() {
+        $.ajax({
+            url: "/banking/dayUseMoney",
+            method: "get",
+            dataType: "json",
+            async: false,
+            success: function (data) {
+                var labels = [];
+                var chartData = [];
+
+                for (var i = 0; i < data.length; i++) {
+                    labels.push(data[i].REGDATE);
+                    chartData.push({ x: data[i].REGDATE, y: data[i].TOTALUSEMONEY });
+                }
+
+                drawLineChart(labels, chartData);
+
+                var todayUseMoney = data[data.length - 1].TOTALUSEMONEY;
+                var yesterdayUseMoney = data[data.length - 2].TOTALUSEMONEY;
+                var difference = todayUseMoney - yesterdayUseMoney;
+
+                var differenceContainer = document.getElementById('differenceContainer');
+                if (difference < 0) {
+                    differenceContainer.innerHTML = '이전보다 <u>' + Math.abs(difference) + '원</u> 만큼 덜 썼어요';
+                } else if (difference > 0) {
+                    differenceContainer.innerHTML = '이전보다 <u>' + difference + '원</u> 만큼 더 썼어요';
+                } else {
+                    differenceContainer.innerText = '이전과 동일한 금액을 사용했어요';
+                }
+            },
+            error: function () {
+                console.log("데이터 가져오기 실패");
+            }
+        });
+    }
+
+    // 추가된 함수: 날짜 범위 선택을 통한 차트 업데이트
+    function updateChart() {
+        var startDate = document.getElementById('startDate').value;
+        var endDate = document.getElementById('endDate').value;
+
+        $.ajax({
+            url: "/banking/UpdateUseMoney", 
+            method: "get",
+            dataType: "json",
+            data: { startDate: startDate, endDate: endDate }, // startDate와 endDate를 데이터로 전송
+            success: function (data) {
+                var labels = [];
+                var chartData = [];
+
+                for (var i = 0; i < data.length; i++) {
+                    labels.push(data[i].REGDATE);
+                    chartData.push({ x: data[i].REGDATE, y: data[i].TOTALUSEMONEY });
+                }
+
+                drawLineChart(labels, chartData);
+
+                var todayUseMoney = data[data.length - 1].TOTALUSEMONEY;
+                var yesterdayUseMoney = data[data.length - 2].TOTALUSEMONEY;
+                var difference = todayUseMoney - yesterdayUseMoney;
+
+                var differenceContainer = document.getElementById('differenceContainer');
+                if (difference < 0) {
+                    differenceContainer.innerHTML = '이전보다 <u>' + Math.abs(difference) + '원</u> 만큼 덜 썼어요';
+                } else if (difference > 0) {
+                    differenceContainer.innerHTML = '이전보다 <u>' + difference + '원</u> 만큼 더 썼어요';
+                } else {
+                    differenceContainer.innerText = '이전과 동일한 금액을 사용했어요';
+                }
+            },
+            error: function () {
+                console.log("데이터 가져오기 실패");
+            }
+        });
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        drawChartWithData();
+    });
+
     </script>
 </head>
 <body>
     <div layout:fragment="content">
-        <h1>계좌 확인</h1>
+        <h1>사용 금액 확인</h1>
+      <div id="container">
+
+        <!-- 추가된 HTML: 날짜 범위 선택을 위한 컨테이너 -->
+        <div id="dateRangeContainer">
+            <label for="startDate">시작 날짜:</label>
+            <input type="date" id="startDate">
+
+            <label for="endDate">종료 날짜:</label>
+            <input type="date" id="endDate">
+
+            <button onclick="updateChart()">차트 업데이트</button>
+        </div>
+
         <div id="lineChartContainer">
             <canvas id="lineChart"></canvas>
         </div>
         <div id="differenceContainer"></div>
     </div>
+  </div>  
 </body>
 </html>

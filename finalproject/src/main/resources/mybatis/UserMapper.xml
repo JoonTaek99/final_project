@@ -65,6 +65,14 @@
 		ORDER BY REGDATE
 	</select>
 	
+	<select id="UpdateUseMoney" parameterType="Map" resultType="Map">
+		SELECT REGDATE, SUM(USEMONEY) AS TOTALUSEMONEY
+		FROM RESERVEBOARD
+		WHERE EMAIL = #{email} AND REGDATE BETWEEN #{startDate} AND #{endDate}
+		GROUP BY REGDATE
+		ORDER BY REGDATE
+	</select>
+	
    
 </mapper>
 

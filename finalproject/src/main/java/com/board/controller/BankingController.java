@@ -287,6 +287,23 @@ public class BankingController {
        return result;
    }
    
+   @ResponseBody
+   @GetMapping("/UpdateUseMoney")
+   public List<Map<String, Object>> UpadateUseMoney(HttpServletRequest request, String startDate, String endDate) {
+       HttpSession session = request.getSession();
+       UserDto ldto = (UserDto) session.getAttribute("ldto");
+       System.out.println( startDate+ ", "+endDate);
+       
+       String email = ldto.getEmail();
+       Map<String, String> map = new HashMap<>();
+       map.put("email", email);
+       map.put("startDate", startDate);
+       map.put("endDate", endDate);
+       List<Map<String, Object>> result = userService.UpdateUseMoney(map);
+       System.out.println(result);
+       return result;
+   }
+   
    //이용기관 부여번호 9자리를 생성하는 메서드
    public String createNum() {
       String createNum="";

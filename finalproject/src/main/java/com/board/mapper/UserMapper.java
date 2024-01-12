@@ -32,4 +32,5 @@ public interface UserMapper {
       
       public List<Map<String, Object>> dayUseMoney(String email);
       
+      public List<Map<String, Object>> UpdateUseMoney(Map<String, String> map);
 }

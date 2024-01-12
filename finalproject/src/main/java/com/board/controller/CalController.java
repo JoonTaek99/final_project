@@ -75,20 +75,20 @@ public class CalController {
           System.out.println("year:"+year);
           System.out.println("month:"+month);
           //달력만들기위한 값 구하기
-          Map<String, Integer>map=calService.makeCalendar(request);
+          Map<String, Integer>map=calService.makeCalendar(request,ykiho);
           model.addAttribute("calMap", map);
           model.addAttribute("ykiho", ykiho);
           model.addAttribute("yadmNm", yadmNm);
           String yyyyMM=year+Util.isTwo(month);//202311 6자리변환
-          List<CalDto>clist=calService.calViewList(yyyyMM, ykiho);
-          model.addAttribute("clist", clist);
+//          List<CalDto>clist=calService.calViewList(yyyyMM, ykiho);
+//          model.addAttribute("clist", clist);
          
           return "cal/Calendar";
        }
     @GetMapping(value="/userCal")
     public String usercalendar(Model model, HttpServletRequest request) {
-    	HttpSession session=request.getSession();
-    	String email = ((UserDto) session.getAttribute("ldto")).getEmail();
+       HttpSession session=request.getSession();
+       String email = ((UserDto) session.getAttribute("ldto")).getEmail();
        //달력에서 일일별 일정목록 구하기
        String year=request.getParameter("year");
        String month=request.getParameter("month");
@@ -101,7 +101,7 @@ public class CalController {
        System.out.println("year:"+year);
        System.out.println("month:"+month);
        //달력만들기위한 값 구하기
-       Map<String, Integer>map=calService.makeCalendar(request);
+       Map<String, Integer>map=calService.usermakeCalendar(request);
        model.addAttribute("calMap", map);
        model.addAttribute("email",email);
        String yyyyMM=year+Util.isTwo(month);//202311 6자리변환
@@ -223,6 +223,7 @@ public class CalController {
                        +Util.isTwo(map.get("date"));
           List<CalDto> list= calService.calBoardList(ykiho,yyyyMMdd);
           model.addAttribute("list", list);
+          model.addAttribute("ykiho", ykiho);
           
           return "cal/calBoardList";
        }
@@ -287,7 +288,7 @@ public class CalController {
        @ResponseBody
        @GetMapping(value="/calCountAjax")
        public Map<String,Integer> calCountAjax(String yyyyMMdd,String ykiho){
-    	  System.out.println(ykiho);
+         System.out.println(ykiho);
           Map<String, Integer>map=new HashMap<>();
           int count=calService.calBoardCount(yyyyMMdd,ykiho);
           map.put("count", count);

@@ -43,18 +43,18 @@
         }
 
         #ctitle {
-        -webkit-border-radius: 12px 12px 0px 0px;
-        -moz-border-radius: 12px 12px 0px 0px;
-        border-radius: 12px 12px 0px 0px;
-        width: 1010px; /* Set the width to 980px */
-        height: 60px;
-        text-align: center;
-        background-color: #3498db;
-        padding: 18px 0;
-        font-size: 28px;
-        color: #FFFFFF;
-        float: left;
-    }
+            -webkit-border-radius: 12px 12px 0px 0px;
+            -moz-border-radius: 12px 12px 0px 0px;
+            border-radius: 12px 12px 0px 0px;
+            width: 1010px; /* Set the width to 980px */
+            height: 60px;
+            text-align: center;
+            background-color: #3498db;
+            padding: 18px 0;
+            font-size: 28px;
+            color: #FFFFFF;
+            float: left;
+        }
 
         .pen {
             width: 20px;
@@ -84,7 +84,18 @@
             text-align: center;
             font-weight: bold;
         }
+
+        .styled-header {
+            text-align: center;
+            background-color: #4CAF50;
+            width: 1010px; /* Set the width to 980px */
+            height: 60px;
+            color: white;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script type="text/javascript">
         $(function () {
             $(".d").hover(function () {
@@ -126,7 +137,7 @@
                     $("#list").empty();
                     var table = "";
                     $.each(data, function (index, value) {
-                        table += "<h1>" + value.yadmNm + "</h1>";
+                        table += "<h1 class='styled-header'>" + value.yadmNm + "</h1>";
                     });
                     table += "</tbody></table>";
                     $("#list").append(table);
@@ -136,7 +147,6 @@
                 }
             });
         }
-
     </script>
 </head>
 <body>
@@ -183,9 +193,9 @@
                         </a>
                         [(${@util.getCalViewList(i,clist)})]
                     </div>
-	                <th:block th:if="${iterStat.last}">
-			            <div th:each="num : ${#numbers.sequence(1, 7 - ((calMap.dayOfWeek - 1 + iterStat.count) % 7))}">&nbsp;</div>
-			        </th:block>
+                   <th:block th:if="${iterStat.last}">
+                     <div th:each="num : ${#numbers.sequence(1, 7 - ((calMap.dayOfWeek - 1 + iterStat.count) % 7))}">&nbsp;</div>
+                 </th:block>
                 </th:block>
             </div>
         </div>

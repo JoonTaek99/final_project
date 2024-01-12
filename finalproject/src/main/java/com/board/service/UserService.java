@@ -84,5 +84,9 @@ public class UserService {
 	   return userMapper.dayUseMoney(email);
    }
    
+   public List<Map<String, Object>> UpdateUseMoney(Map<String, String> map){
+	   return userMapper.UpdateUseMoney(map);
+   }
+   
    
 }

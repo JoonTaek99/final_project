@@ -27,50 +27,46 @@
 <body>
 <div layout:fragment="content">
 <div id="container2">
-   <h1>일정목록보기</h1>
-   <form th:action="@{/schedule/calMulDel}" method="post"
-           th:object="${deleteCalCommand}" onsubmit="return isCheck()">
-      <table class="table">
-         <col width="50px"/>
-         <col width="200px"/>
-         <col width="300px"/>
-         <col width="200px"/>
-         <tr>
-            <th><input type="checkbox" name="all" onclick=""/></th>
-            <th>일정</th>
-            <th>제목</th>
-            <th>작성일</th>
-         </tr>
-         <th:block th:if="${#lists.isEmpty(list)}">
+    <h1>일정목록보기</h1>
+    <form th:action="@{/schedule/calMulDel}" method="post" th:object="${deleteCalCommand}" onsubmit="return isCheck()">
+        <table class="table">
+            <col width="50px"/>
+            <col width="200px"/>
+            <col width="300px"/>
+            <col width="200px"/>
             <tr>
-               <td colspan="4" style="text-align: center" >작성된 일정이 없습니다</td>
+                <th><input type="checkbox" name="all" onclick=""/></th>
+                <th>일정</th>
+                <th>제목</th>
+                <th>작성일</th>
             </tr>
-         </th:block>
-         <th:block th:unless="${#lists.isEmpty(list)}">
-            <tr th:each="dto:${list}">
-               <td><input type="checkbox" name="seq" th:value="${dto.seq}"/></td>
-               <td th:text="${@util.toDates(dto.mdate)}"></td>
-               <td>
-                  <a th:href="@{/cal/calBoardDetail(seq=${dto.seq})}" th:text="${dto.title}"></a>
-               </td>
-               <td th:text="${#dates.format(dto.regdate, 'yyyy-MM-dd')}"></td>
-            </tr>
-         </th:block>
-         <tr>
-            <td colspan="4">
+            <th:block th:if="${#lists.isEmpty(list)}">
+                <tr>
+                    <td colspan="4" style="text-align: center">작성된 일정이 없습니다</td>
+                </tr>
+            </th:block>
+            <th:block th:unless="${#lists.isEmpty(list)}">
+                <tr th:each="dto:${list}">
+                    <td><input type="checkbox" name="seq" th:value="${dto.seq}"/></td>
+                    <td th:text="${@util.toDates(dto.mdate)}"></td>
+                    <td>
+                        <a th:href="@{/cal/calBoardDetail(seq=${dto.seq})}" th:text="${dto.title}"></a>
+                    </td>
+                    <td th:text="${#dates.format(dto.regdate, 'yyyy-MM-dd')}"></td>
+                </tr>
+            </th:block>
+        </table>
 
-                           <button type="submit" title="일정삭제" class="btn btn-default" 
-                        style="display: none;"></button>
-                  <button type="button" title="달력보기" class="btn btn-default" 
-                           th:onclick="|location.href='@{/cal/calendar(year=${session.ymdMap.year},month=${session.ymdMap.month})}'|">
-                    <span class="glyphicon glyphicon-calendar" ></span>
-                  </button>
-<!--                   <span class="errorField" th:if="${#fields.hasErrors('seq')}" -->
-<!--                                      th:errors="*{seq}"></span> -->
-            </td>
-         </tr>
-      </table>
-   </form>
+        <input type="hidden" id="ykiho" th:value="${ykiho}" />
+
+        <div>
+            <button type="submit" title="일정삭제" class="btn btn-default" style="display: none;"></button>
+            <button type="button" title="달력보기" class="btn btn-default"
+                    th:onclick="|location.href='@{/cal/calendar(year=${session.ymdMap.year},month=${session.ymdMap.month},ykiho=${ykiho},yadmNm=${yadmNm})}'|">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </button>
+        </div>
+    </form>
 </div>
 </div>
 </body>

@@ -120,29 +120,24 @@
                 <div>금</div>
                 <div>토</div>
             </div>
-            <div id="tbody">
-    <th:block th:if="${calMap.dayOfWeek>1}">
-        <div th:each="num:${#numbers.sequence(1,calMap.dayOfWeek-1)}">&nbsp;</div>
-    </th:block>
-    
-    <th:block th:each="i, iterStat : ${#numbers.sequence(1,calMap.lastDay)}">
-        <div>
-            <a class="d" th:text="${i}" th:style="'color:'+${@util.fontColor(i, calMap.dayOfWeek)}"
-               th:href="@{/cal/calBoardList(year=${calMap.year},month=${calMap.month},date=${i},ykiho=${ykiho},yadmNm=${yadmNm})}"
-            ></a>
-            <a th:href="@{/cal/addCalBoardForm(year=${calMap.year},month=${calMap.month},date=${i},ykiho=${ykiho},yadmNm=${yadmNm})}">
-                <img class="pen" th:src="@{/css/pen.png}" />
-            </a>
-            [(${@util.getCalViewList(i,clist)})]
-        </div>
-        
-        <!-- Calculate the remaining empty cells -->
-        <th:block th:if="${iterStat.last}">
-            <div th:each="num : ${#numbers.sequence(1, 7 - ((calMap.dayOfWeek - 1 + iterStat.count) % 7))}">&nbsp;</div>
-        </th:block>
-    </th:block>
-</div>
-
+ <div id="tbody">
+                <th:block th:if="${calMap.dayOfWeek > 1}">
+                    <div th:each="num:${#numbers.sequence(1,calMap.dayOfWeek-1)}">&nbsp;</div>
+                </th:block>
+                <th:block th:each="i, iterStat : ${#numbers.sequence(1,calMap.lastDay)}">
+                    <div>
+                        <span class="d" th:text="${i}" th:style="'color:'+${@util.fontColor(i, calMap.dayOfWeek)}"></span>
+                        <a th:href="@{/cal/calBoardList(year=${calMap.year},month=${calMap.month},date=${i},ykiho=${ykiho},yadmNm=${yadmNm})}">
+                            <!-- 버튼 이미지 추가 -->
+                            <img class="pen" th:src="@{/css/pen.png}" />
+                        </a>
+                        [(${@util.getCalViewList(i,clist)})]
+                    </div>
+                    <th:block th:if="${iterStat.last}">
+                        <div th:each="num : ${#numbers.sequence(1, 7 - ((calMap.dayOfWeek - 1 + iterStat.count) % 7))}">&nbsp;</div>
+                    </th:block>
+                </th:block>
+            </div>
         </div>
     </div>
 </div>
